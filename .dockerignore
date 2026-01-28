@@ -1,0 +1,30 @@
+# Dependências
+node_modules
+npm-debug.log*
+
+# Build local
+.next
+out
+
+# Git
+.git
+.gitignore
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+
+# Env local (manter .env, ignorar outros)
+.env.local
+.env.development
+.env.production
+
+# Docs
+*.md
+LICENSE
+
+# Misc
+.DS_Store
+Thumbs.db
