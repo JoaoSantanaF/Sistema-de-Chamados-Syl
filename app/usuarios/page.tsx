@@ -11,14 +11,17 @@ import { Label } from "@/components/ui/label"
 import { Plus, Trash2, Shield, UserIcon, Pencil } from "lucide-react"
 import { DashboardLayout } from "@/components/dashboard-layout"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Switch } from "@/components/ui/switch"
 
 interface User {
   id?: string
   username: string
   nome: string
-  password: string
+  password?: string
   role: "admin" | "usuario"
+  mustChangePassword?: boolean
 }
+
 
 export default function UsuariosPage() {
   const router = useRouter()
@@ -31,7 +34,9 @@ export default function UsuariosPage() {
     nome: "",
     password: "",
     role: "usuario" as "admin" | "usuario",
+    mustChangePassword: true,
   })
+
   const [isLoading, setIsLoading] = useState(false)
 
   useEffect(() => {
@@ -70,8 +75,9 @@ export default function UsuariosPage() {
     setFormData({
       username: user.username,
       nome: user.nome,
-      password: user.password,
+      password: "",
       role: user.role,
+      mustChangePassword: user.mustChangePassword ?? true,
     })
     setShowForm(true)
   }
@@ -86,15 +92,21 @@ export default function UsuariosPage() {
         const userToUpdate = users.find((u) => u.username === editingUser)
         if (!userToUpdate) return
 
+        const payload: Record<string, any> = {
+          username: formData.username,
+          nome: formData.nome,
+          role: formData.role,
+          mustChangePassword:
+            formData.role === "usuario" ? formData.mustChangePassword : false,
+        }
+        if (formData.password) {
+          payload.password = formData.password
+        }
+
         const response = await fetch(`/api/usuarios/${userToUpdate.id}`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            username: formData.username,
-            nome: formData.nome,
-            password: formData.password,
-            role: formData.role,
-          }),
+          body: JSON.stringify(payload),
         })
 
         if (!response.ok) {
@@ -113,6 +125,8 @@ export default function UsuariosPage() {
               username: formData.username,
               nome: formData.nome,
               role: formData.role,
+              mustChangePassword:
+                formData.role === "usuario" ? formData.mustChangePassword : false,
             }),
           )
         }
@@ -126,6 +140,8 @@ export default function UsuariosPage() {
             nome: formData.nome,
             password: formData.password,
             role: formData.role,
+            mustChangePassword:
+              formData.role === "usuario" ? formData.mustChangePassword : false,
           }),
         })
 
@@ -145,7 +161,7 @@ export default function UsuariosPage() {
       await loadUsers()
 
       // Resetar form
-      setFormData({ username: "", nome: "", password: "", role: "usuario" })
+      setFormData({ username: "", nome: "", password: "", role: "usuario", mustChangePassword: true })
       setShowForm(false)
       setEditingUser(null)
     } catch (err) {
@@ -191,7 +207,7 @@ export default function UsuariosPage() {
   }
 
   const handleCancel = () => {
-    setFormData({ username: "", nome: "", password: "", role: "usuario" })
+    setFormData({ username: "", nome: "", password: "", role: "usuario", mustChangePassword: true })
     setShowForm(false)
     setEditingUser(null)
   }
@@ -211,7 +227,7 @@ export default function UsuariosPage() {
             onClick={() => {
               setShowForm(!showForm)
               setEditingUser(null)
-              setFormData({ username: "", nome: "", password: "", role: "usuario" })
+              setFormData({ username: "", nome: "", password: "", role: "usuario", mustChangePassword: true })
             }}
           >
             <Plus className="h-4 w-4 mr-2" />
@@ -263,7 +279,7 @@ export default function UsuariosPage() {
                     value={formData.password}
                     onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                     disabled={isLoading}
-                    required
+                    required={!editingUser}
                   />
                 </div>
 
@@ -271,7 +287,13 @@ export default function UsuariosPage() {
                   <Label htmlFor="role">Tipo de usuário</Label>
                   <Select
                     value={formData.role}
-                    onValueChange={(value: "admin" | "usuario") => setFormData({ ...formData, role: value })}
+                    onValueChange={(value: "admin" | "usuario") =>
+                      setFormData({
+                        ...formData,
+                        role: value,
+                        mustChangePassword: value === "admin" ? false : formData.mustChangePassword,
+                      })
+                    }
                     disabled={isLoading}
                   >
                     <SelectTrigger>
@@ -280,9 +302,25 @@ export default function UsuariosPage() {
                     <SelectContent>
                       <SelectItem value="usuario">Usuário</SelectItem>
                       <SelectItem value="admin">Administrador</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  </SelectContent>
+                </Select>
+              </div>
+              {formData.role === "usuario" && (
+                <div className="flex items-center justify-between rounded-lg border p-3">
+                  <div className="space-y-1">
+                    <Label htmlFor="mustChangePassword">Trocar senha no primeiro login</Label>
+                    <p className="text-xs text-muted-foreground">
+                      ObrigatÃ³rio para usuÃ¡rios comuns no primeiro acesso.
+                    </p>
+                  </div>
+                  <Switch
+                    id="mustChangePassword"
+                    checked={formData.mustChangePassword}
+                    onCheckedChange={(checked) => setFormData({ ...formData, mustChangePassword: checked })}
+                    disabled={isLoading}
+                  />
                 </div>
+              )}
 
                 <div className="flex gap-2">
                   <Button type="submit" className="flex-1" disabled={isLoading}>

@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { ArrowLeft, Upload, FileText } from "lucide-react"
+import { ArrowLeft, FileText } from "lucide-react"
 import Link from "next/link"
 import { DashboardLayout } from "@/components/dashboard-layout"
 
@@ -23,7 +23,7 @@ export default function NovoChamadoPage() {
     solicitante: "",
     prioridade: "Média" as "Baixa" | "Média" | "Alta",
   })
-  const [anexo, setAnexo] = useState<File | null>(null)
+
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
@@ -52,7 +52,6 @@ export default function NovoChamadoPage() {
           descricao: formData.descricao,
           solicitante: formData.solicitante,
           prioridade: formData.prioridade,
-          anexo_nome: anexo ? anexo.name : null,
           anexo_url: null,
         }),
       })
@@ -72,22 +71,6 @@ export default function NovoChamadoPage() {
       alert("Erro ao criar chamado")
     } finally {
       setLoading(false)
-    }
-  }
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (file) {
-      const validTypes = ["application/pdf", "image/png", "image/jpeg", "image/jpg"]
-      if (!validTypes.includes(file.type)) {
-        alert("Apenas arquivos PDF, PNG e JPG são permitidos")
-        return
-      }
-      if (file.size > 16 * 1024 * 1024) {
-        alert("O arquivo deve ter no máximo 16MB")
-        return
-      }
-      setAnexo(file)
     }
   }
 
@@ -171,28 +154,6 @@ export default function NovoChamadoPage() {
                       <SelectItem value="Alta">Alta</SelectItem>
                     </SelectContent>
                   </Select>
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="anexo">Anexo (opcional)</Label>
-                  <div className="flex items-center gap-2">
-                    <Input
-                      id="anexo"
-                      type="file"
-                      accept=".pdf,.png,.jpg,.jpeg"
-                      onChange={handleFileChange}
-                      className="hidden"
-                    />
-                    <Button
-                      type="button"
-                      variant="outline"
-                      className="w-full bg-transparent"
-                      onClick={() => document.getElementById("anexo")?.click()}
-                    >
-                      <Upload className="h-4 w-4 mr-2" />
-                      {anexo ? anexo.name : "Escolher arquivo (PDF, PNG, JPG - máx 16MB)"}
-                    </Button>
-                  </div>
                 </div>
 
                 <div className="flex gap-3 pt-4">

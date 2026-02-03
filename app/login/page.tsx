@@ -44,8 +44,14 @@ export default function LoginPage() {
           username: data.username,
           nome: data.nome,
           role: data.role,
+          mustChangePassword: data.mustChangePassword,
         }),
       )
+
+      if (data.role === "usuario" && data.mustChangePassword) {
+        router.push("/alterar-senha")
+        return
+      }
 
       router.push("/dashboard")
     } catch (err) {

@@ -7,6 +7,7 @@ interface Usuario {
   password: string
   nome: string
   role: string
+  mustChangePassword: boolean
 }
 
 // GET /api/usuarios/[id] - Buscar usuário por ID
@@ -17,7 +18,7 @@ export async function GET(
   try {
     const { id } = await params
     const usuario = await queryOne<Usuario>(
-      'SELECT id, username, nome, role FROM usuarios WHERE id = $1',
+      'SELECT id, username, nome, role, must_change_password AS "mustChangePassword" FROM usuarios WHERE id = $1',
       [id]
     )
 
@@ -46,6 +47,7 @@ export async function PUT(
     if (data.password !== undefined) updateData.password = data.password
     if (data.nome !== undefined) updateData.nome = data.nome
     if (data.role !== undefined) updateData.role = data.role
+    if (data.mustChangePassword !== undefined) updateData.must_change_password = data.mustChangePassword
 
     if (Object.keys(updateData).length === 0) {
       return NextResponse.json({ error: 'Nenhum campo para atualizar' }, { status: 400 })
@@ -58,8 +60,8 @@ export async function PUT(
     }
 
     // Retorna sem a senha
-    const { password, ...userWithoutPassword } = usuario
-    return NextResponse.json(userWithoutPassword)
+    const { password, must_change_password, ...userWithoutPassword } = usuario as unknown as Record<string, any>
+    return NextResponse.json({ ...userWithoutPassword, mustChangePassword: must_change_password })
   } catch (error) {
     console.error('Erro ao atualizar usuário:', error)
     return NextResponse.json({ error: 'Erro interno do servidor' }, { status: 500 })

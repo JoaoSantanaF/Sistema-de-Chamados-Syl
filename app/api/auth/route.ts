@@ -7,6 +7,7 @@ interface Usuario {
   password: string
   nome: string
   role: string
+  mustChangePassword: boolean
 }
 
 // POST /api/auth - Login
@@ -19,7 +20,7 @@ export async function POST(request: NextRequest) {
     }
 
     const user = await queryOne<Usuario>(
-      'SELECT id, username, nome, role FROM usuarios WHERE username = $1 AND password = $2',
+      'SELECT id, username, nome, role, must_change_password AS "mustChangePassword" FROM usuarios WHERE username = $1 AND password = $2',
       [username, password]
     )
 
@@ -31,7 +32,8 @@ export async function POST(request: NextRequest) {
       id: user.id,
       username: user.username,
       nome: user.nome,
-      role: user.role
+      role: user.role,
+      mustChangePassword: user.mustChangePassword,
     })
   } catch (error) {
     console.error('Erro no login:', error)
