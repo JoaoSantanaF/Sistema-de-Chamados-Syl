@@ -8,9 +8,15 @@ interface Ativo {
   localizacao: string
   criticidade: string
   status: string
+}
+
+interface AtivoResponse extends Ativo {
   ultima_manutencao?: string
   proxima_manutencao?: string
+  ciclos: CicloManutencao[]
+  registros: any[]
 }
+
 
 interface CicloManutencao {
   id: string
@@ -42,11 +48,20 @@ export async function GET(
 
     // Buscar registros de manutenção
     const registros = await query(
-      'SELECT * FROM registros_manutencao WHERE ativo_id = $1 ORDER BY data_manutencao DESC',
+      'SELECT * FROM registros_manutencao WHERE ativo_id = $1 ORDER BY data_execucao DESC',
       [id]
     )
 
-    return NextResponse.json({ ...ativo, ciclos, registros })
+    const ultimoRegistro = registros[0]?.data_execucao ?? null
+    const proximoCiclo = ciclos[0]?.data_proxima_manutencao ?? null
+
+    return NextResponse.json({
+  ...ativo,
+  ultima_manutencao: ultimoRegistro,
+  proxima_manutencao: proximoCiclo,
+  ciclos,
+  registros
+})
   } catch (error) {
     console.error('Erro ao buscar ativo:', error)
     return NextResponse.json({ error: 'Erro interno do servidor' }, { status: 500 })
@@ -63,13 +78,13 @@ export async function PUT(
     const data = await request.json()
 
     const updateData: Record<string, any> = {}
+
     if (data.nome !== undefined) updateData.nome = data.nome
     if (data.tipo !== undefined) updateData.tipo = data.tipo
     if (data.localizacao !== undefined) updateData.localizacao = data.localizacao
     if (data.criticidade !== undefined) updateData.criticidade = data.criticidade
     if (data.status !== undefined) updateData.status = data.status
-    if (data.ultima_manutencao !== undefined) updateData.ultima_manutencao = data.ultima_manutencao
-    if (data.proxima_manutencao !== undefined) updateData.proxima_manutencao = data.proxima_manutencao
+
 
     if (Object.keys(updateData).length === 0) {
       return NextResponse.json({ error: 'Nenhum campo para atualizar' }, { status: 400 })
