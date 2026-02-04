@@ -158,7 +158,13 @@ export default function ChamadoDetalhePage() {
   const handleToggleStatus = async () => {
     if (!ticket) return
 
-    const newStatus = ticket.status === "Fechado" ? "Aberto" : "Fechado"
+    // Ciclo de status: Aberto -> Em andamento -> Fechado -> Aberto
+    const newStatus =
+      ticket.status === "Fechado"
+        ? "Aberto"
+        : ticket.status === "Aberto"
+        ? "Em andamento"
+        : "Fechado"
 
     try {
       const updates = {
@@ -178,7 +184,7 @@ export default function ChamadoDetalhePage() {
         return
       }
 
-      setTicket({ ...ticket, ...updates })
+      setTicket({ ...ticket, status: newStatus as "Aberto" | "Em andamento" | "Fechado" })
       setFormData({ ...formData, status: newStatus })
     } catch (error) {
       console.error("Erro ao atualizar status:", error)
@@ -246,6 +252,11 @@ export default function ChamadoDetalhePage() {
                   <>
                     <LockOpen className="h-4 w-4 mr-2" />
                     Reabrir
+                  </>
+                ) : ticket.status === "Aberto" ? (
+                  <>
+                    <MessageSquare className="h-4 w-4 mr-2" />
+                    Marcar em andamento
                   </>
                 ) : (
                   <>

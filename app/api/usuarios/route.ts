@@ -7,6 +7,7 @@ interface Usuario {
   password: string
   nome: string
   role: string
+  mustChangePassword: boolean
   created_at: string
 }
 
@@ -14,7 +15,7 @@ interface Usuario {
 export async function GET() {
   try {
     const usuarios = await query<Usuario>(
-      'SELECT id, username, nome, role, created_at FROM usuarios ORDER BY created_at DESC'
+      'SELECT id, username, nome, role, created_at, must_change_password AS "mustChangePassword" FROM usuarios ORDER BY created_at DESC'
     )
     return NextResponse.json(usuarios)
   } catch (error) {
@@ -32,18 +33,26 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Username e password são obrigatórios' }, { status: 400 })
     }
 
+    const role = data.role || 'usuario'
+    const mustChangePassword =
+      typeof data.mustChangePassword === 'boolean' ? data.mustChangePassword : role === 'usuario'
+
     const usuario = await insert<Usuario>('usuarios', {
       username: data.username,
       password: data.password,
       nome: data.nome || data.username,
-      role: data.role || 'usuario',
+      role,
+      must_change_password: mustChangePassword,
       created_at: new Date().toISOString()
     })
 
     // Retorna sem a senha
     if (usuario) {
-      const { password, ...userWithoutPassword } = usuario
-      return NextResponse.json(userWithoutPassword, { status: 201 })
+      const { password, must_change_password, ...userWithoutPassword } = usuario as unknown as Record<string, any>
+      return NextResponse.json(
+        { ...userWithoutPassword, mustChangePassword: must_change_password },
+        { status: 201 }
+      )
     }
 
     return NextResponse.json({ error: 'Erro ao criar usuário' }, { status: 500 })

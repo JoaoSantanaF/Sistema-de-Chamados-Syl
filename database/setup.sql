@@ -20,13 +20,14 @@ CREATE TABLE IF NOT EXISTS ti.usuarios (
     nome VARCHAR(255) NOT NULL,
     password VARCHAR(255) NOT NULL,
     role VARCHAR(20) NOT NULL DEFAULT 'usuario' CHECK (role IN ('admin', 'usuario')),
+    must_change_password BOOLEAN NOT NULL DEFAULT TRUE,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
 -- Inserir usuário admin padrão (se não existir)
-INSERT INTO ti.usuarios (username, nome, password, role)
-VALUES ('admin', 'Administrador', 'admin123', 'admin')
+INSERT INTO ti.usuarios (username, nome, password, role, must_change_password)
+VALUES ('admin', 'Administrador', 'admin123', 'admin', FALSE)
 ON CONFLICT (username) DO NOTHING;
 
 -- =============================================================================
