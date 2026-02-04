@@ -28,3 +28,6 @@ next-env.d.ts
 
 # .tar files
 helpdesk.tar*
+
+# IDE or AI files
+.vscode/
