@@ -14,6 +14,24 @@ interface Chamado {
   updated_at: string
 }
 
+interface UsuarioRole {
+  role: string
+}
+
+async function isAdminUser(username: string): Promise<boolean> {
+  const user = await queryOne<UsuarioRole>('SELECT role FROM usuarios WHERE username = $1', [username])
+  return user?.role === 'admin'
+}
+
+async function isValidAdminResponsible(username: string): Promise<boolean> {
+  const admin = await queryOne<{ username: string }>(
+    'SELECT username FROM usuarios WHERE username = $1 AND role = $2',
+    [username, 'admin']
+  )
+
+  return Boolean(admin)
+}
+
 // GET /api/chamados/[id] - Buscar chamado por ID
 export async function GET(
   request: NextRequest,
@@ -49,7 +67,25 @@ export async function PUT(
     if (data.descricao !== undefined) updateData.descricao = data.descricao
     if (data.prioridade !== undefined) updateData.prioridade = data.prioridade
     if (data.status !== undefined) updateData.status = data.status
-    if (data.responsavel !== undefined) updateData.responsavel = data.responsavel
+
+    if (data.responsavel !== undefined) {
+      if (!data.actorUsername || !(await isAdminUser(data.actorUsername))) {
+        return NextResponse.json(
+          { error: 'Somente administradores podem alterar o técnico responsável' },
+          { status: 403 }
+        )
+      }
+
+      if (data.responsavel) {
+        const isAdminResponsible = await isValidAdminResponsible(data.responsavel)
+        if (!isAdminResponsible) {
+          return NextResponse.json({ error: 'Técnico responsável inválido' }, { status: 400 })
+        }
+      }
+
+      updateData.responsavel = data.responsavel || null
+    }
+
     if (data.solucao !== undefined) updateData.solucao = data.solucao
     updateData.updated_at = new Date().toISOString()
 

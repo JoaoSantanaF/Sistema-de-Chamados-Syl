@@ -32,18 +32,26 @@ interface Comentario {
   created_at: string
 }
 
+interface AdminUser {
+  id: string
+  username: string
+  nome: string
+}
+
 export default function ChamadoDetalhePage() {
   const router = useRouter()
   const params = useParams()
   const id = params.id as string
   const [user, setUser] = useState<{ username: string; role: string } | null>(null)
   const [ticket, setTicket] = useState<Ticket | null>(null)
+  const [adminUsers, setAdminUsers] = useState<AdminUser[]>([])
   const [formData, setFormData] = useState({
     titulo: "",
     descricao: "",
     solicitante: "",
     prioridade: "Média" as "Baixa" | "Média" | "Alta",
     status: "Aberto" as "Aberto" | "Em andamento" | "Fechado",
+    responsavel: "",
     solucao: "",
   })
   const [comentarios, setComentarios] = useState<Comentario[]>([])
@@ -66,10 +74,19 @@ export default function ChamadoDetalhePage() {
         router.push("/login")
         return
       }
+
       const parsedUser = JSON.parse(userData)
       setUser(parsedUser)
 
       try {
+        if (parsedUser.role === "admin") {
+          const adminResponse = await fetch("/api/usuarios/admins")
+          const adminData = await adminResponse.json()
+          if (adminResponse.ok) {
+            setAdminUsers(adminData || [])
+          }
+        }
+
         const response = await fetch(`/api/chamados/${id}`)
         const data = await response.json()
 
@@ -80,7 +97,6 @@ export default function ChamadoDetalhePage() {
           return
         }
 
-        // Verificar permissão
         if (parsedUser.role !== "admin" && data.solicitante !== parsedUser.username) {
           alert("Você não tem permissão para acessar este chamado")
           router.push("/chamados")
@@ -94,11 +110,11 @@ export default function ChamadoDetalhePage() {
           solicitante: data.solicitante,
           prioridade: data.prioridade,
           status: data.status,
+          responsavel: data.responsavel || "",
           solucao: data.solucao || "",
         })
 
-        // TODO: Carregar comentários quando a API estiver implementada
-        setComentarios([])
+        await loadComentarios(data.id)
       } catch (error) {
         console.error("Erro ao buscar chamado:", error)
         alert("Erro ao carregar chamado")
@@ -111,23 +127,66 @@ export default function ChamadoDetalhePage() {
     loadTicket()
   }, [router, id])
 
+  const loadComentarios = async (chamadoId: string) => {
+    try {
+      const response = await fetch(`/api/chamados/${chamadoId}/comentarios`)
+      const data = await response.json()
+
+      if (!response.ok) {
+        console.error("Erro ao carregar comentarios:", data.error)
+        return
+      }
+
+      setComentarios(data || [])
+    } catch (error) {
+      console.error("Erro ao carregar comentarios:", error)
+    }
+  }
+
   const handleAddComentario = async () => {
     if (!ticket || !user || !novoComentario.trim()) return
 
-    // TODO: Implementar API de comentários
-    alert("Funcionalidade de comentários será implementada em breve")
+    try {
+      const response = await fetch(`/api/chamados/${ticket.id}/comentarios`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          user_id: user.username,
+          comentario: novoComentario,
+        }),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        console.error("Erro ao adicionar comentario:", data.error)
+        alert("Erro ao adicionar comentario: " + data.error)
+        return
+      }
+
+      setComentarios((prev) => [...prev, data])
+      setNovoComentario("")
+    } catch (error) {
+      console.error("Erro ao adicionar comentario:", error)
+      alert("Erro ao adicionar comentario")
+    }
   }
 
   const handleSave = async () => {
     if (!ticket || !user) return
 
     try {
-      const updates: any = {
+      const updates: Record<string, unknown> = {
         titulo: formData.titulo,
         descricao: formData.descricao,
         solicitante: formData.solicitante,
         prioridade: formData.prioridade,
         status: formData.status,
+      }
+
+      if (user.role === "admin") {
+        updates.responsavel = formData.responsavel || null
+        updates.actorUsername = user.username
       }
 
       if (formData.status === "Fechado") {
@@ -158,13 +217,12 @@ export default function ChamadoDetalhePage() {
   const handleToggleStatus = async () => {
     if (!ticket) return
 
-    // Ciclo de status: Aberto -> Em andamento -> Fechado -> Aberto
     const newStatus =
       ticket.status === "Fechado"
         ? "Aberto"
         : ticket.status === "Aberto"
-        ? "Em andamento"
-        : "Fechado"
+          ? "Em andamento"
+          : "Fechado"
 
     try {
       const updates = {
@@ -228,7 +286,6 @@ export default function ChamadoDetalhePage() {
     <DashboardLayout>
       <div className="flex justify-center">
         <div className="space-y-6 max-w-3xl">
-          {/* Header */}
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <Button variant="outline" size="icon" asChild>
@@ -239,7 +296,7 @@ export default function ChamadoDetalhePage() {
               <div>
                 <h1 className="text-3xl font-bold tracking-tight flex items-center gap-2">
                   <FileText className="h-8 w-8" />
-                  Form.147 – Chamado Suporte TI
+                  Form.147 - Chamado Suporte TI
                 </h1>
                 <p className="text-muted-foreground mt-1">
                   ID: #{String(ticket.id).slice(0, 8)} • Conforme TI-01 Rev.10 - Item 6.3
@@ -274,7 +331,6 @@ export default function ChamadoDetalhePage() {
             </div>
           </div>
 
-          {/* Info Card */}
           <Card>
             <CardHeader>
               <CardTitle>Informações do Chamado</CardTitle>
@@ -311,6 +367,30 @@ export default function ChamadoDetalhePage() {
                   onChange={(e) => setFormData({ ...formData, solicitante: e.target.value })}
                 />
               </div>
+
+              {user.role === "admin" && (
+                <div className="space-y-2">
+                  <Label htmlFor="responsavel">Técnico responsável</Label>
+                  <Select
+                    value={formData.responsavel || "sem-responsavel"}
+                    onValueChange={(value) =>
+                      setFormData({ ...formData, responsavel: value === "sem-responsavel" ? "" : value })
+                    }
+                  >
+                    <SelectTrigger id="responsavel">
+                      <SelectValue placeholder="Selecione um administrador" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="sem-responsavel">Não atribuído</SelectItem>
+                      {adminUsers.map((admin) => (
+                        <SelectItem key={admin.id} value={admin.username}>
+                          {admin.nome} (@{admin.username})
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">

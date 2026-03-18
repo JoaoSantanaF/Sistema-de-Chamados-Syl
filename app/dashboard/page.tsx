@@ -166,7 +166,10 @@ export default function DashboardPage() {
                     <div className="flex items-center justify-between p-4 rounded-lg border hover:bg-accent transition-colors cursor-pointer">
                       <div className="flex-1 min-w-0">
                         <p className="font-medium truncate">{ticket.titulo}</p>
-                        <p className="text-sm text-muted-foreground truncate">{ticket.solicitante}</p>
+                        <p className="text-sm text-muted-foreground truncate">Solicitante: {ticket.solicitante}</p>
+                        <p className="text-sm text-muted-foreground truncate">
+                          Técnico responsável: {ticket.responsavel || "Não atribuído"}
+                        </p>
                       </div>
                       <div className="flex items-center gap-3 ml-4">
                         <span

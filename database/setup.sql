@@ -1,4 +1,4 @@
--- =============================================================================
+﻿-- =============================================================================
 -- HelpDesk TI + Manutenção Preventiva - Script de Setup do Banco de Dados
 -- Schema: ti
 -- Usuário: ti_user
@@ -45,6 +45,18 @@ CREATE TABLE IF NOT EXISTS ti.chamados (
     solucao TEXT,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- =============================================================================
+-- TABELA: comentarios
+-- Armazena comentários de andamento dos chamados
+-- =============================================================================
+CREATE TABLE IF NOT EXISTS ti.comentarios (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    chamado_id UUID NOT NULL REFERENCES ti.chamados(id) ON DELETE CASCADE,
+    user_id VARCHAR(100) NOT NULL,
+    comentario TEXT NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
 -- =============================================================================
@@ -118,6 +130,7 @@ CREATE INDEX IF NOT EXISTS idx_chamados_status ON ti.chamados(status);
 CREATE INDEX IF NOT EXISTS idx_chamados_prioridade ON ti.chamados(prioridade);
 CREATE INDEX IF NOT EXISTS idx_chamados_solicitante ON ti.chamados(solicitante);
 CREATE INDEX IF NOT EXISTS idx_chamados_created_at ON ti.chamados(created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_comentarios_chamado_id ON ti.comentarios(chamado_id);
 
 CREATE INDEX IF NOT EXISTS idx_ativos_criticidade ON ti.ativos(criticidade);
 CREATE INDEX IF NOT EXISTS idx_ativos_status ON ti.ativos(status);
