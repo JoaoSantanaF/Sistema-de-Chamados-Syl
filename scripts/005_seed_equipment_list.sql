@@ -1,5 +1,5 @@
 -- First, insert checklist templates
-INSERT INTO public.modelos_checklist (nome, descricao, tipo_ativo) VALUES
+INSERT INTO ti.modelos_checklist (nome, descricao, tipo_ativo) VALUES
   ('Manutenção de Computador', 'Checklist padrão para manutenção preventiva de computadores e notebooks', 'Computador'),
   ('Manutenção de Impressora', 'Checklist padrão para manutenção preventiva de impressoras', 'Impressora'),
   ('Manutenção de Equipamento Industrial', 'Checklist padrão para manutenção preventiva de equipamentos industriais', 'Equipamento')
@@ -7,7 +7,7 @@ ON CONFLICT DO NOTHING;
 
 -- Insert all equipment with their criticality levels
 -- Criticidade Alta = 30 dias
-INSERT INTO public.ativos (nome, tipo, criticidade, localizacao, status, proxima_manutencao) VALUES
+INSERT INTO ti.ativos (nome, tipo, criticidade, localizacao, status, proxima_manutencao) VALUES
   ('CARIMBADEIRA', 'Equipamento', 'Alta', 'Produção', 'Operacional', CURRENT_DATE + INTERVAL '30 days'),
   ('EMBALAGEM ZEBRA1', 'Impressora', 'Alta', 'Embalagem', 'Operacional', CURRENT_DATE + INTERVAL '30 days'),
   ('EMBALAGEMZEBRA2', 'Impressora', 'Alta', 'Embalagem', 'Operacional', CURRENT_DATE + INTERVAL '30 days'),
@@ -29,7 +29,7 @@ INSERT INTO public.ativos (nome, tipo, criticidade, localizacao, status, proxima
 ON CONFLICT DO NOTHING;
 
 -- Criticidade Média = 60 dias
-INSERT INTO public.ativos (nome, tipo, criticidade, localizacao, status, proxima_manutencao) VALUES
+INSERT INTO ti.ativos (nome, tipo, criticidade, localizacao, status, proxima_manutencao) VALUES
   ('SAPATA-RFID', 'Computador', 'Média', 'Produção', 'Operacional', CURRENT_DATE + INTERVAL '60 days'),
   ('EXPEDICAO', 'Computador', 'Média', 'Expedição', 'Operacional', CURRENT_DATE + INTERVAL '60 days'),
   ('ROGERIOTHINK', 'Computador', 'Média', 'Escritório', 'Operacional', CURRENT_DATE + INTERVAL '60 days'),
@@ -52,7 +52,7 @@ INSERT INTO public.ativos (nome, tipo, criticidade, localizacao, status, proxima
 ON CONFLICT DO NOTHING;
 
 -- Criticidade Baixa = 180 dias
-INSERT INTO public.ativos (nome, tipo, criticidade, localizacao, status, proxima_manutencao) VALUES
+INSERT INTO ti.ativos (nome, tipo, criticidade, localizacao, status, proxima_manutencao) VALUES
   ('EDNATHINK', 'Computador', 'Baixa', 'Escritório', 'Operacional', CURRENT_DATE + INTERVAL '180 days'),
   ('ARIANITHINK', 'Computador', 'Baixa', 'Escritório', 'Operacional', CURRENT_DATE + INTERVAL '180 days'),
   ('ERICATHINK', 'Computador', 'Baixa', 'Escritório', 'Operacional', CURRENT_DATE + INTERVAL '180 days'),

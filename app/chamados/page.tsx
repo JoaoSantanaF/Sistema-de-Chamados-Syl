@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useRouter } from "next/navigation"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -23,9 +23,23 @@ interface Ticket {
   updated_at: string
 }
 
+interface UserSession {
+  username: string
+  role: string
+}
+
+const POLLING_INTERVAL_MS = 5000
+
+function getLatestUpdatedAt(items: Ticket[]) {
+  return items.reduce<string | null>((latest, item) => {
+    if (!latest) return item.updated_at
+    return new Date(item.updated_at).getTime() > new Date(latest).getTime() ? item.updated_at : latest
+  }, null)
+}
+
 export default function ChamadosPage() {
   const router = useRouter()
-  const [user, setUser] = useState<{ username: string; role: string } | null>(null)
+  const [user, setUser] = useState<UserSession | null>(null)
   const [tickets, setTickets] = useState<Ticket[]>([])
   const [filteredTickets, setFilteredTickets] = useState<Ticket[]>([])
   const [searchTerm, setSearchTerm] = useState("")
@@ -33,6 +47,9 @@ export default function ChamadosPage() {
   const [priorityFilter, setPriorityFilter] = useState<string>("todos")
   const [startDate, setStartDate] = useState("")
   const [endDate, setEndDate] = useState("")
+  const [lastSyncAt, setLastSyncAt] = useState<string | null>(null)
+  const isFetchingRef = useRef(false)
+  const pollingStateRef = useRef<{ count: number; lastUpdated: string | null }>({ count: 0, lastUpdated: null })
 
   useEffect(() => {
     const userData = localStorage.getItem("user")
@@ -40,24 +57,83 @@ export default function ChamadosPage() {
       router.push("/login")
       return
     }
-    const parsedUser = JSON.parse(userData)
-    setUser(parsedUser)
 
-    loadTickets(parsedUser)
+    const parsedUser = JSON.parse(userData) as UserSession
+    setUser(parsedUser)
+    void loadTickets(parsedUser)
   }, [router])
 
   useEffect(() => {
     filterTickets()
   }, [tickets, searchTerm, statusFilter, priorityFilter, startDate, endDate])
 
-  const loadTickets = async (currentUser: { username: string; role: string }) => {
+  useEffect(() => {
+    if (!user) return
+    if (user.role !== "admin") return
+
+    const refreshTickets = () => {
+      if (document.visibilityState !== "visible") return
+      void loadTickets(user, { useKnownState: true })
+    }
+
+    const intervalId = window.setInterval(refreshTickets, POLLING_INTERVAL_MS)
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "visible") {
+        void loadTickets(user, { useKnownState: true })
+      }
+    }
+
+    document.addEventListener("visibilitychange", handleVisibilityChange)
+
+    return () => {
+      window.clearInterval(intervalId)
+      document.removeEventListener("visibilitychange", handleVisibilityChange)
+    }
+  }, [user])
+
+  const syncTicketsState = (nextTickets: Ticket[]) => {
+    setTickets(nextTickets)
+    setFilteredTickets(nextTickets)
+    pollingStateRef.current = {
+      count: nextTickets.length,
+      lastUpdated: getLatestUpdatedAt(nextTickets),
+    }
+    setLastSyncAt(new Date().toISOString())
+  }
+
+  const loadTickets = async (
+    currentUser: UserSession,
+    options?: {
+      useKnownState?: boolean
+    },
+  ) => {
+    if (isFetchingRef.current) return
+
+    isFetchingRef.current = true
+
     try {
       const params = new URLSearchParams({
         role: currentUser.role,
         solicitante: currentUser.username,
       })
 
-      const response = await fetch(`/api/chamados?${params}`)
+      if (options?.useKnownState) {
+        params.set("knownCount", String(pollingStateRef.current.count))
+
+        if (pollingStateRef.current.lastUpdated) {
+          params.set("knownLastUpdated", pollingStateRef.current.lastUpdated)
+        }
+      }
+
+      const response = await fetch(`/api/chamados?${params.toString()}`, {
+        cache: "no-store",
+      })
+
+      if (response.status === 304) {
+        setLastSyncAt(new Date().toISOString())
+        return
+      }
+
       const data = await response.json()
 
       if (!response.ok) {
@@ -65,10 +141,11 @@ export default function ChamadosPage() {
         return
       }
 
-      setTickets(data || [])
-      setFilteredTickets(data || [])
+      syncTicketsState(data || [])
     } catch (err) {
       console.error("Erro ao carregar tickets:", err)
+    } finally {
+      isFetchingRef.current = false
     }
   }
 
@@ -102,7 +179,8 @@ export default function ChamadosPage() {
         (t) =>
           t.titulo.toLowerCase().includes(searchTerm.toLowerCase()) ||
           t.descricao.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          t.solicitante.toLowerCase().includes(searchTerm.toLowerCase()),
+          t.solicitante.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          (t.responsavel || "").toLowerCase().includes(searchTerm.toLowerCase()),
       )
     }
 
@@ -124,7 +202,8 @@ export default function ChamadosPage() {
         return
       }
 
-      setTickets((prev) => prev.filter((t) => t.id !== id))
+      const nextTickets = tickets.filter((t) => t.id !== id)
+      syncTicketsState(nextTickets)
       alert("Chamado excluído com sucesso!")
     } catch (err) {
       console.error("Erro ao deletar:", err)
@@ -137,12 +216,11 @@ export default function ChamadosPage() {
   return (
     <DashboardLayout>
       <div className="space-y-6">
-        {/* Header */}
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold tracking-tight flex items-center gap-2">
               <FileText className="h-8 w-8" />
-              Form.147 – Chamado Suporte TI
+              Form.147 - Chamado Suporte TI
             </h1>
             <p className="text-muted-foreground mt-1">
               Conforme procedimento TI-01 Rev.10 - Sistema informatizado de registro de ocorrências
@@ -156,7 +234,6 @@ export default function ChamadosPage() {
           </Button>
         </div>
 
-        {/* Filters */}
         <Card>
           <CardContent className="pt-6">
             <div className="flex flex-col gap-4">
@@ -164,7 +241,7 @@ export default function ChamadosPage() {
                 <div className="flex-1 relative">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                   <Input
-                    placeholder="Buscar por título, descrição ou solicitante..."
+                    placeholder="Buscar por título, descrição, solicitante ou responsável..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     className="pl-9"
@@ -232,14 +309,16 @@ export default function ChamadosPage() {
           </CardContent>
         </Card>
 
-        {/* Tickets List */}
         <Card>
           <CardHeader>
             <CardTitle>Lista de Chamados ({filteredTickets.length})</CardTitle>
             <CardDescription>
               {statusFilter !== "todos" || priorityFilter !== "todos"
-                ? `Mostrando chamados filtrados`
+                ? "Mostrando chamados filtrados"
                 : "Todos os chamados do sistema"}
+              {user.role === "admin" &&
+                lastSyncAt &&
+                ` • última verificação às ${new Date(lastSyncAt).toLocaleTimeString("pt-BR")}`}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -272,6 +351,9 @@ export default function ChamadosPage() {
                         </span>
                       </div>
                       <p className="text-sm text-muted-foreground">Solicitante: {ticket.solicitante}</p>
+                      <p className="text-sm text-muted-foreground">
+                        Técnico responsável: {ticket.responsavel || "Não atribuído"}
+                      </p>
                       <p className="text-xs text-muted-foreground">
                         Aberto em: {new Date(ticket.created_at).toLocaleString("pt-BR")}
                       </p>
@@ -312,7 +394,7 @@ export default function ChamadosPage() {
             )}
           </CardContent>
         </Card>
-      </div>  
+      </div>
     </DashboardLayout>
   )
 }

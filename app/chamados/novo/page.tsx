@@ -14,14 +14,22 @@ import { ArrowLeft, FileText } from "lucide-react"
 import Link from "next/link"
 import { DashboardLayout } from "@/components/dashboard-layout"
 
+interface AdminUser {
+  id: string
+  username: string
+  nome: string
+}
+
 export default function NovoChamadoPage() {
   const router = useRouter()
   const [user, setUser] = useState<{ username: string; role: string } | null>(null)
+  const [adminUsers, setAdminUsers] = useState<AdminUser[]>([])
   const [formData, setFormData] = useState({
     titulo: "",
     descricao: "",
     solicitante: "",
     prioridade: "Média" as "Baixa" | "Média" | "Alta",
+    responsavel: "",
   })
 
   const [loading, setLoading] = useState(false)
@@ -35,7 +43,25 @@ export default function NovoChamadoPage() {
     const parsedUser = JSON.parse(userData)
     setUser(parsedUser)
     setFormData((prev) => ({ ...prev, solicitante: parsedUser.username }))
+
+    if (parsedUser.role === "admin") {
+      loadAdminUsers()
+    }
   }, [router])
+
+  const loadAdminUsers = async () => {
+    try {
+      const response = await fetch("/api/usuarios/admins")
+      const data = await response.json()
+      if (!response.ok) {
+        console.error("Erro ao carregar administradores:", data.error)
+        return
+      }
+      setAdminUsers(data || [])
+    } catch (error) {
+      console.error("Erro ao carregar administradores:", error)
+    }
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -44,16 +70,23 @@ export default function NovoChamadoPage() {
 
     setLoading(true)
     try {
+      const payload: Record<string, any> = {
+        titulo: formData.titulo,
+        descricao: formData.descricao,
+        solicitante: formData.solicitante,
+        prioridade: formData.prioridade,
+        anexo_url: null,
+      }
+
+      if (user.role === "admin") {
+        payload.actorUsername = user.username
+        payload.responsavel = formData.responsavel || null
+      }
+
       const response = await fetch("/api/chamados", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          titulo: formData.titulo,
-          descricao: formData.descricao,
-          solicitante: formData.solicitante,
-          prioridade: formData.prioridade,
-          anexo_url: null,
-        }),
+        body: JSON.stringify(payload),
       })
 
       const data = await response.json()
@@ -64,7 +97,6 @@ export default function NovoChamadoPage() {
         return
       }
 
-      console.log("Chamado criado com sucesso:", data)
       router.push("/chamados")
     } catch (error) {
       console.error("Erro ao criar chamado:", error)
@@ -138,6 +170,30 @@ export default function NovoChamadoPage() {
                     required
                   />
                 </div>
+
+                {user.role === "admin" && (
+                  <div className="space-y-2">
+                    <Label htmlFor="responsavel">Técnico responsável</Label>
+                    <Select
+                      value={formData.responsavel || "sem-responsavel"}
+                      onValueChange={(value) =>
+                        setFormData({ ...formData, responsavel: value === "sem-responsavel" ? "" : value })
+                      }
+                    >
+                      <SelectTrigger id="responsavel">
+                        <SelectValue placeholder="Selecione um administrador" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="sem-responsavel">Não atribuído</SelectItem>
+                        {adminUsers.map((admin) => (
+                          <SelectItem key={admin.id} value={admin.username}>
+                            {admin.nome} (@{admin.username})
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                )}
 
                 <div className="space-y-2">
                   <Label htmlFor="prioridade">Prioridade *</Label>
