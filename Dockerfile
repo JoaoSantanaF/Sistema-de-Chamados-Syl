@@ -34,6 +34,7 @@ COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 # Copiar .env e entrypoint
 COPY --chown=nextjs:nodejs .env .env
 COPY --chown=nextjs:nodejs entrypoint.sh entrypoint.sh
+RUN sed -i 's/\r//' entrypoint.sh
 RUN chmod +x entrypoint.sh
 
 USER nextjs
