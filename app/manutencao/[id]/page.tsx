@@ -133,6 +133,9 @@ export default function MaintenanceDetailPage() {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             ultima_manutencao: new Date().toISOString().split("T")[0],
+            ciclo_id: currentCycleId,
+            tecnico: user.username,
+            observacoes: generalObservations,
           }),
         })
 
