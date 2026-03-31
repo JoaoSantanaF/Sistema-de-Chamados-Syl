@@ -12,6 +12,7 @@ import { Plus, Trash2, Shield, UserIcon, Pencil } from "lucide-react"
 import { DashboardLayout } from "@/components/dashboard-layout"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
+import { USER_SECTORS } from "@/lib/user-sectors"
 
 interface User {
   id?: string
@@ -19,6 +20,7 @@ interface User {
   nome: string
   password?: string
   role: "admin" | "usuario"
+  setor: string
   mustChangePassword?: boolean
 }
 
@@ -34,6 +36,7 @@ export default function UsuariosPage() {
     nome: "",
     password: "",
     role: "usuario" as "admin" | "usuario",
+    setor: "",
     mustChangePassword: true,
   })
 
@@ -77,6 +80,7 @@ export default function UsuariosPage() {
       nome: user.nome,
       password: "",
       role: user.role,
+      setor: user.setor || "",
       mustChangePassword: user.mustChangePassword ?? true,
     })
     setShowForm(true)
@@ -85,6 +89,12 @@ export default function UsuariosPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
+
+    if (!formData.setor) {
+      alert("Selecione um setor para o usuário")
+      setIsLoading(false)
+      return
+    }
 
     try {
       if (editingUser) {
@@ -96,6 +106,7 @@ export default function UsuariosPage() {
           username: formData.username,
           nome: formData.nome,
           role: formData.role,
+          setor: formData.setor,
           mustChangePassword:
             formData.role === "usuario" ? formData.mustChangePassword : false,
         }
@@ -125,6 +136,7 @@ export default function UsuariosPage() {
               username: formData.username,
               nome: formData.nome,
               role: formData.role,
+              setor: formData.setor,
               mustChangePassword:
                 formData.role === "usuario" ? formData.mustChangePassword : false,
             }),
@@ -140,6 +152,7 @@ export default function UsuariosPage() {
             nome: formData.nome,
             password: formData.password,
             role: formData.role,
+            setor: formData.setor,
             mustChangePassword:
               formData.role === "usuario" ? formData.mustChangePassword : false,
           }),
@@ -161,7 +174,7 @@ export default function UsuariosPage() {
       await loadUsers()
 
       // Resetar form
-      setFormData({ username: "", nome: "", password: "", role: "usuario", mustChangePassword: true })
+      setFormData({ username: "", nome: "", password: "", role: "usuario", setor: "", mustChangePassword: true })
       setShowForm(false)
       setEditingUser(null)
     } catch (err) {
@@ -207,7 +220,7 @@ export default function UsuariosPage() {
   }
 
   const handleCancel = () => {
-    setFormData({ username: "", nome: "", password: "", role: "usuario", mustChangePassword: true })
+    setFormData({ username: "", nome: "", password: "", role: "usuario", setor: "", mustChangePassword: true })
     setShowForm(false)
     setEditingUser(null)
   }
@@ -227,7 +240,7 @@ export default function UsuariosPage() {
             onClick={() => {
               setShowForm(!showForm)
               setEditingUser(null)
-              setFormData({ username: "", nome: "", password: "", role: "usuario", mustChangePassword: true })
+              setFormData({ username: "", nome: "", password: "", role: "usuario", setor: "", mustChangePassword: true })
             }}
           >
             <Plus className="h-4 w-4 mr-2" />
@@ -305,6 +318,27 @@ export default function UsuariosPage() {
                   </SelectContent>
                 </Select>
               </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="setor">Setor</Label>
+                <Select
+                  value={formData.setor}
+                  onValueChange={(value) => setFormData({ ...formData, setor: value })}
+                  disabled={isLoading}
+                >
+                  <SelectTrigger id="setor">
+                    <SelectValue placeholder="Selecione o setor" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {USER_SECTORS.map((setor) => (
+                      <SelectItem key={setor} value={setor}>
+                        {setor}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
               {formData.role === "usuario" && (
                 <div className="flex items-center justify-between rounded-lg border p-3">
                   <div className="space-y-1">
@@ -369,6 +403,7 @@ export default function UsuariosPage() {
                     <div>
                       <p className="font-medium">{user.nome}</p>
                       <p className="text-sm text-muted-foreground">@{user.username}</p>
+                      <p className="text-sm text-muted-foreground">Setor: {user.setor}</p>
                       <p className="text-xs text-muted-foreground">
                         {user.role === "admin" ? "Administrador" : "Usuário"}
                       </p>

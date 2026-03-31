@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { query, queryOne } from '@/lib/db'
+import { ensureUserSectorColumn } from '@/lib/user-sectors.server'
 
 interface Usuario {
   id: string
@@ -7,12 +8,15 @@ interface Usuario {
   password: string
   nome: string
   role: string
+  setor?: string | null
   mustChangePassword: boolean
 }
 
 // POST /api/auth - Login
 export async function POST(request: NextRequest) {
   try {
+    await ensureUserSectorColumn()
+
     const { username, password } = await request.json()
 
     if (!username || !password) {
@@ -20,7 +24,7 @@ export async function POST(request: NextRequest) {
     }
 
     const user = await queryOne<Usuario>(
-      'SELECT id, username, nome, role, must_change_password AS "mustChangePassword" FROM usuarios WHERE username = $1 AND password = $2',
+      'SELECT id, username, nome, role, setor, must_change_password AS "mustChangePassword" FROM usuarios WHERE username = $1 AND password = $2',
       [username, password]
     )
 
@@ -33,6 +37,7 @@ export async function POST(request: NextRequest) {
       username: user.username,
       nome: user.nome,
       role: user.role,
+      setor: user.setor,
       mustChangePassword: user.mustChangePassword,
     })
   } catch (error) {

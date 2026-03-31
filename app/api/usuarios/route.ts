@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { query, insert } from '@/lib/db'
+import { USER_SECTORS } from '@/lib/user-sectors'
+import { ensureUserSectorColumn } from '@/lib/user-sectors.server'
 
 interface Usuario {
   id: string
@@ -7,6 +9,7 @@ interface Usuario {
   password: string
   nome: string
   role: string
+  setor?: string | null
   mustChangePassword: boolean
   created_at: string
 }
@@ -14,8 +17,10 @@ interface Usuario {
 // GET /api/usuarios - Listar usuários
 export async function GET() {
   try {
+    await ensureUserSectorColumn()
+
     const usuarios = await query<Usuario>(
-      'SELECT id, username, nome, role, created_at, must_change_password AS "mustChangePassword" FROM usuarios ORDER BY created_at DESC'
+      'SELECT id, username, nome, role, setor, created_at, must_change_password AS "mustChangePassword" FROM usuarios ORDER BY created_at DESC'
     )
     return NextResponse.json(usuarios)
   } catch (error) {
@@ -27,6 +32,8 @@ export async function GET() {
 // POST /api/usuarios - Criar usuário
 export async function POST(request: NextRequest) {
   try {
+    await ensureUserSectorColumn()
+
     const data = await request.json()
 
     if (!data.username || !data.password) {
@@ -34,14 +41,24 @@ export async function POST(request: NextRequest) {
     }
 
     const role = data.role || 'usuario'
+    const setor = typeof data.setor === 'string' ? data.setor.trim() : ''
     const mustChangePassword =
       typeof data.mustChangePassword === 'boolean' ? data.mustChangePassword : role === 'usuario'
+
+    if (!setor) {
+      return NextResponse.json({ error: 'Setor e obrigatorio' }, { status: 400 })
+    }
+
+    if (!USER_SECTORS.includes(setor as (typeof USER_SECTORS)[number])) {
+      return NextResponse.json({ error: 'Setor invalido' }, { status: 400 })
+    }
 
     const usuario = await insert<Usuario>('usuarios', {
       username: data.username,
       password: data.password,
       nome: data.nome || data.username,
       role,
+      setor,
       must_change_password: mustChangePassword,
       created_at: new Date().toISOString()
     })

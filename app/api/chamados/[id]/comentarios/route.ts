@@ -9,6 +9,15 @@ interface Comentario {
   created_at: string
 }
 
+interface UsuarioRole {
+  role: string
+}
+
+async function isAdminUser(username: string): Promise<boolean> {
+  const user = await queryOne<UsuarioRole>('SELECT role FROM usuarios WHERE username = $1', [username])
+  return user?.role === 'admin'
+}
+
 async function ensureComentariosTable() {
   await query(`
     CREATE TABLE IF NOT EXISTS comentarios (
@@ -66,6 +75,15 @@ export async function POST(
       return NextResponse.json({ error: 'Usuario e obrigatorio' }, { status: 400 })
     }
 
+    const actorUsername = String(data.user_id).trim()
+
+    if (!(await isAdminUser(actorUsername))) {
+      return NextResponse.json(
+        { error: 'Somente administradores podem registrar andamento do chamado' },
+        { status: 403 }
+      )
+    }
+
     if (!data.comentario || !String(data.comentario).trim()) {
       return NextResponse.json({ error: 'Comentario e obrigatorio' }, { status: 400 })
     }
@@ -77,7 +95,7 @@ export async function POST(
 
     const comentario = await insert<Comentario>('comentarios', {
       chamado_id: id,
-      user_id: String(data.user_id).trim(),
+      user_id: actorUsername,
       comentario: String(data.comentario).trim(),
       created_at: new Date().toISOString(),
     })
