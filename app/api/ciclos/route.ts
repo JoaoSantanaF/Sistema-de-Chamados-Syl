@@ -6,7 +6,7 @@ interface CicloManutencao {
   ativo_id: string
   modelo_id: string
   data_proxima_manutencao: string
-  data_conclusao?: string
+  data_fim?: string
   status: string
   observacoes?: string
 }
@@ -128,7 +128,7 @@ export async function PUT(request: NextRequest) {
     if (data.ciclo_id) {
       const updateData: Record<string, any> = {}
       if (data.status !== undefined) updateData.status = data.status
-      if (data.data_conclusao !== undefined) updateData.data_conclusao = data.data_conclusao
+      if (data.data_fim !== undefined) updateData.data_fim = data.data_fim
       if (data.observacoes !== undefined) updateData.observacoes = data.observacoes
 
       const ciclo = await update<CicloManutencao>(
