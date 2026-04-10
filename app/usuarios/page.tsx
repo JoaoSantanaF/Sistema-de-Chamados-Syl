@@ -2,13 +2,13 @@
 
 import type React from "react"
 
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useRouter } from "next/navigation"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Plus, Trash2, Shield, UserIcon, Pencil } from "lucide-react"
+import { Plus, Trash2, Shield, UserIcon, Pencil, Search } from "lucide-react"
 import { DashboardLayout } from "@/components/dashboard-layout"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
@@ -27,10 +27,12 @@ interface User {
 
 export default function UsuariosPage() {
   const router = useRouter()
+  const formRef = useRef<HTMLDivElement | null>(null)
   const [currentUser, setCurrentUser] = useState<{ username: string; role: string } | null>(null)
   const [users, setUsers] = useState<User[]>([])
   const [showForm, setShowForm] = useState(false)
   const [editingUser, setEditingUser] = useState<string | null>(null)
+  const [searchTerm, setSearchTerm] = useState("")
   const [formData, setFormData] = useState({
     username: "",
     nome: "",
@@ -56,6 +58,16 @@ export default function UsuariosPage() {
     setCurrentUser(parsedUser)
     loadUsers()
   }, [router])
+
+  useEffect(() => {
+    if (!showForm || !formRef.current) return
+
+    const frame = window.requestAnimationFrame(() => {
+      formRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })
+    })
+
+    return () => window.cancelAnimationFrame(frame)
+  }, [showForm, editingUser])
 
   const loadUsers = async () => {
     try {
@@ -225,6 +237,15 @@ export default function UsuariosPage() {
     setEditingUser(null)
   }
 
+  const normalizedSearch = searchTerm.trim().toLowerCase()
+  const filteredUsers = users.filter((user) => {
+    if (!normalizedSearch) return true
+
+    return [user.nome, user.username, user.setor, user.role].some((value) =>
+      String(value ?? "").toLowerCase().includes(normalizedSearch),
+    )
+  })
+
   if (!currentUser) return null
 
   return (
@@ -250,7 +271,7 @@ export default function UsuariosPage() {
 
         {/* Form */}
         {showForm && (
-          <Card>
+          <Card ref={formRef}>
             <CardHeader>
               <CardTitle>{editingUser ? "Editar Usuário" : "Criar Novo Usuário"}</CardTitle>
               <CardDescription>
@@ -378,54 +399,70 @@ export default function UsuariosPage() {
         {/* Users List */}
         <Card>
           <CardHeader>
-            <CardTitle>Usuários do Sistema ({users.length})</CardTitle>
+            <CardTitle>Usuários do Sistema ({filteredUsers.length})</CardTitle>
             <CardDescription>Lista de todos os usuários cadastrados</CardDescription>
           </CardHeader>
           <CardContent>
+            <div className="relative mb-4">
+              <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+              <Input
+                placeholder="Pesquisar por nome, usuário, setor ou perfil"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-9"
+              />
+            </div>
+
             <div className="space-y-3">
-              {users.map((user) => (
-                <div
-                  key={user.id}
-                  className="flex items-center justify-between p-4 rounded-lg border hover:bg-accent transition-colors"
-                >
-                  <div className="flex items-center gap-4">
-                    <div
-                      className={`h-10 w-10 rounded-full flex items-center justify-center ${
-                        user.role === "admin" ? "bg-primary" : "bg-muted"
-                      }`}
-                    >
-                      {user.role === "admin" ? (
-                        <Shield className="h-5 w-5 text-primary-foreground" />
-                      ) : (
-                        <UserIcon className="h-5 w-5 text-muted-foreground" />
+              {filteredUsers.length > 0 ? (
+                filteredUsers.map((user) => (
+                  <div
+                    key={user.id}
+                    className="flex items-center justify-between p-4 rounded-lg border hover:bg-accent transition-colors"
+                  >
+                    <div className="flex items-center gap-4">
+                      <div
+                        className={`h-10 w-10 rounded-full flex items-center justify-center ${
+                          user.role === "admin" ? "bg-primary" : "bg-muted"
+                        }`}
+                      >
+                        {user.role === "admin" ? (
+                          <Shield className="h-5 w-5 text-primary-foreground" />
+                        ) : (
+                          <UserIcon className="h-5 w-5 text-muted-foreground" />
+                        )}
+                      </div>
+                      <div>
+                        <p className="font-medium">{user.nome}</p>
+                        <p className="text-sm text-muted-foreground">@{user.username}</p>
+                        <p className="text-sm text-muted-foreground">Setor: {user.setor}</p>
+                        <p className="text-xs text-muted-foreground">
+                          {user.role === "admin" ? "Administrador" : "Usuário"}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      {user.username === "admin" && (
+                        <span className="text-xs px-3 py-1 rounded-full bg-primary/10 text-primary font-medium">
+                          Padrão
+                        </span>
+                      )}
+                      <Button variant="outline" size="sm" onClick={() => handleEdit(user)}>
+                        <Pencil className="h-4 w-4" />
+                      </Button>
+                      {user.username !== "admin" && (
+                        <Button variant="outline" size="sm" onClick={() => handleDelete(user.username)}>
+                          <Trash2 className="h-4 w-4 text-destructive" />
+                        </Button>
                       )}
                     </div>
-                    <div>
-                      <p className="font-medium">{user.nome}</p>
-                      <p className="text-sm text-muted-foreground">@{user.username}</p>
-                      <p className="text-sm text-muted-foreground">Setor: {user.setor}</p>
-                      <p className="text-xs text-muted-foreground">
-                        {user.role === "admin" ? "Administrador" : "Usuário"}
-                      </p>
-                    </div>
                   </div>
-                  <div className="flex items-center gap-2">
-                    {user.username === "admin" && (
-                      <span className="text-xs px-3 py-1 rounded-full bg-primary/10 text-primary font-medium">
-                        Padrão
-                      </span>
-                    )}
-                    <Button variant="outline" size="sm" onClick={() => handleEdit(user)}>
-                      <Pencil className="h-4 w-4" />
-                    </Button>
-                    {user.username !== "admin" && (
-                      <Button variant="outline" size="sm" onClick={() => handleDelete(user.username)}>
-                        <Trash2 className="h-4 w-4 text-destructive" />
-                      </Button>
-                    )}
-                  </div>
+                ))
+              ) : (
+                <div className="rounded-lg border border-dashed p-6 text-center text-sm text-muted-foreground">
+                  Nenhum usuário encontrado para a pesquisa informada.
                 </div>
-              ))}
+              )}
             </div>
           </CardContent>
         </Card>
