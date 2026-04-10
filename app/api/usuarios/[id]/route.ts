@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { queryOne, update, remove } from '@/lib/db'
+import { USER_SECTORS } from '@/lib/user-sectors'
+import { ensureUserSectorColumn } from '@/lib/user-sectors.server'
 
 interface Usuario {
   id: string
@@ -7,6 +9,7 @@ interface Usuario {
   password: string
   nome: string
   role: string
+  setor?: string | null
   mustChangePassword: boolean
 }
 
@@ -16,9 +19,11 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    await ensureUserSectorColumn()
+
     const { id } = await params
     const usuario = await queryOne<Usuario>(
-      'SELECT id, username, nome, role, must_change_password AS "mustChangePassword" FROM usuarios WHERE id = $1',
+      'SELECT id, username, nome, role, setor, must_change_password AS "mustChangePassword" FROM usuarios WHERE id = $1',
       [id]
     )
 
@@ -39,6 +44,8 @@ export async function PUT(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    await ensureUserSectorColumn()
+
     const { id } = await params
     const data = await request.json()
 
@@ -47,6 +54,19 @@ export async function PUT(
     if (data.password !== undefined) updateData.password = data.password
     if (data.nome !== undefined) updateData.nome = data.nome
     if (data.role !== undefined) updateData.role = data.role
+    if (data.setor !== undefined) {
+      const setor = typeof data.setor === 'string' ? data.setor.trim() : ''
+
+      if (!setor) {
+        return NextResponse.json({ error: 'Setor e obrigatorio' }, { status: 400 })
+      }
+
+      if (!USER_SECTORS.includes(setor as (typeof USER_SECTORS)[number])) {
+        return NextResponse.json({ error: 'Setor invalido' }, { status: 400 })
+      }
+
+      updateData.setor = setor
+    }
     if (data.mustChangePassword !== undefined) updateData.must_change_password = data.mustChangePassword
 
     if (Object.keys(updateData).length === 0) {

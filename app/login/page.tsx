@@ -44,6 +44,7 @@ export default function LoginPage() {
           username: data.username,
           nome: data.nome,
           role: data.role,
+          setor: data.setor,
           mustChangePassword: data.mustChangePassword,
         }),
       )

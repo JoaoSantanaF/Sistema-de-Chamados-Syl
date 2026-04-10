@@ -42,7 +42,7 @@ export async function GET(
     const chamado = await queryOne<Chamado>('SELECT * FROM chamados WHERE id = $1', [id])
 
     if (!chamado) {
-      return NextResponse.json({ error: 'Chamado não encontrado' }, { status: 404 })
+      return NextResponse.json({ error: 'Chamado nao encontrado' }, { status: 404 })
     }
 
     return NextResponse.json(chamado)
@@ -60,8 +60,19 @@ export async function PUT(
   try {
     const { id } = await params
     const data = await request.json()
+    const actorUsername = typeof data.actorUsername === 'string' ? data.actorUsername.trim() : ''
 
-    // Remove campos undefined/null
+    if (!actorUsername) {
+      return NextResponse.json({ error: 'Usuario executor e obrigatorio' }, { status: 400 })
+    }
+
+    if (!(await isAdminUser(actorUsername))) {
+      return NextResponse.json(
+        { error: 'Somente administradores podem alterar chamados apos a abertura' },
+        { status: 403 }
+      )
+    }
+
     const updateData: Record<string, any> = {}
     if (data.titulo !== undefined) updateData.titulo = data.titulo
     if (data.descricao !== undefined) updateData.descricao = data.descricao
@@ -69,17 +80,10 @@ export async function PUT(
     if (data.status !== undefined) updateData.status = data.status
 
     if (data.responsavel !== undefined) {
-      if (!data.actorUsername || !(await isAdminUser(data.actorUsername))) {
-        return NextResponse.json(
-          { error: 'Somente administradores podem alterar o técnico responsável' },
-          { status: 403 }
-        )
-      }
-
       if (data.responsavel) {
         const isAdminResponsible = await isValidAdminResponsible(data.responsavel)
         if (!isAdminResponsible) {
-          return NextResponse.json({ error: 'Técnico responsável inválido' }, { status: 400 })
+          return NextResponse.json({ error: 'Tecnico responsavel invalido' }, { status: 400 })
         }
       }
 
@@ -96,7 +100,7 @@ export async function PUT(
     const chamado = await update<Chamado>('chamados', updateData, 'id', id)
 
     if (!chamado) {
-      return NextResponse.json({ error: 'Chamado não encontrado' }, { status: 404 })
+      return NextResponse.json({ error: 'Chamado nao encontrado' }, { status: 404 })
     }
 
     return NextResponse.json(chamado)
@@ -113,10 +117,20 @@ export async function DELETE(
 ) {
   try {
     const { id } = await params
+    const actorUsername = request.nextUrl.searchParams.get('actorUsername')?.trim()
+
+    if (!actorUsername) {
+      return NextResponse.json({ error: 'Usuario executor e obrigatorio' }, { status: 400 })
+    }
+
+    if (!(await isAdminUser(actorUsername))) {
+      return NextResponse.json({ error: 'Somente administradores podem excluir chamados' }, { status: 403 })
+    }
+
     const deleted = await remove('chamados', 'id', id)
 
     if (!deleted) {
-      return NextResponse.json({ error: 'Chamado não encontrado' }, { status: 404 })
+      return NextResponse.json({ error: 'Chamado nao encontrado' }, { status: 404 })
     }
 
     return NextResponse.json({ success: true })

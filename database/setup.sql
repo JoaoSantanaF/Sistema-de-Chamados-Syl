@@ -4,6 +4,8 @@
 -- Usuário: ti_user
 -- =============================================================================
 
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
+
 -- Criar schema se não existir
 CREATE SCHEMA IF NOT EXISTS ti;
 
@@ -20,6 +22,7 @@ CREATE TABLE IF NOT EXISTS ti.usuarios (
     nome VARCHAR(255) NOT NULL,
     password VARCHAR(255) NOT NULL,
     role VARCHAR(20) NOT NULL DEFAULT 'usuario' CHECK (role IN ('admin', 'usuario')),
+    setor VARCHAR(100),
     must_change_password BOOLEAN NOT NULL DEFAULT TRUE,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
@@ -40,7 +43,7 @@ CREATE TABLE IF NOT EXISTS ti.chamados (
     descricao TEXT NOT NULL,
     solicitante VARCHAR(255) NOT NULL,
     prioridade VARCHAR(20) NOT NULL DEFAULT 'Média' CHECK (prioridade IN ('Alta', 'Média', 'Baixa')),
-    status VARCHAR(30) NOT NULL DEFAULT 'Aberto' CHECK (status IN ('Aberto', 'Em Andamento', 'Resolvido', 'Fechado')),
+    status VARCHAR(30) NOT NULL DEFAULT 'Aberto' CHECK (status IN ('Aberto', 'Em andamento', 'Fechado')),
     responsavel VARCHAR(255),
     solucao TEXT,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
@@ -142,6 +145,53 @@ CREATE INDEX IF NOT EXISTS idx_ciclos_status ON ti.ciclos_manutencao(status);
 CREATE INDEX IF NOT EXISTS idx_itens_ciclo_id ON ti.itens_checklist(ciclo_id);
 
 CREATE INDEX IF NOT EXISTS idx_registros_ativo_id ON ti.registros_manutencao(ativo_id);
+
+-- =============================================================================
+-- TRIGGER para manter updated_at sincronizado
+-- =============================================================================
+CREATE OR REPLACE FUNCTION ti.set_updated_at()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW.updated_at = NOW();
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+DROP TRIGGER IF EXISTS trg_usuarios_updated_at ON ti.usuarios;
+CREATE TRIGGER trg_usuarios_updated_at
+BEFORE UPDATE ON ti.usuarios
+FOR EACH ROW
+EXECUTE FUNCTION ti.set_updated_at();
+
+DROP TRIGGER IF EXISTS trg_chamados_updated_at ON ti.chamados;
+CREATE TRIGGER trg_chamados_updated_at
+BEFORE UPDATE ON ti.chamados
+FOR EACH ROW
+EXECUTE FUNCTION ti.set_updated_at();
+
+DROP TRIGGER IF EXISTS trg_ativos_updated_at ON ti.ativos;
+CREATE TRIGGER trg_ativos_updated_at
+BEFORE UPDATE ON ti.ativos
+FOR EACH ROW
+EXECUTE FUNCTION ti.set_updated_at();
+
+DROP TRIGGER IF EXISTS trg_ciclos_updated_at ON ti.ciclos_manutencao;
+CREATE TRIGGER trg_ciclos_updated_at
+BEFORE UPDATE ON ti.ciclos_manutencao
+FOR EACH ROW
+EXECUTE FUNCTION ti.set_updated_at();
+
+DROP TRIGGER IF EXISTS trg_itens_checklist_updated_at ON ti.itens_checklist;
+CREATE TRIGGER trg_itens_checklist_updated_at
+BEFORE UPDATE ON ti.itens_checklist
+FOR EACH ROW
+EXECUTE FUNCTION ti.set_updated_at();
+
+DROP TRIGGER IF EXISTS trg_registros_updated_at ON ti.registros_manutencao;
+CREATE TRIGGER trg_registros_updated_at
+BEFORE UPDATE ON ti.registros_manutencao
+FOR EACH ROW
+EXECUTE FUNCTION ti.set_updated_at();
 
 -- =============================================================================
 -- PERMISSÕES para ti_user

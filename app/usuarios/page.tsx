@@ -2,16 +2,17 @@
 
 import type React from "react"
 
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useRouter } from "next/navigation"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Plus, Trash2, Shield, UserIcon, Pencil } from "lucide-react"
+import { Plus, Trash2, Shield, UserIcon, Pencil, Search } from "lucide-react"
 import { DashboardLayout } from "@/components/dashboard-layout"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
+import { USER_SECTORS } from "@/lib/user-sectors"
 
 interface User {
   id?: string
@@ -19,21 +20,25 @@ interface User {
   nome: string
   password?: string
   role: "admin" | "usuario"
+  setor: string
   mustChangePassword?: boolean
 }
 
 
 export default function UsuariosPage() {
   const router = useRouter()
+  const formRef = useRef<HTMLDivElement | null>(null)
   const [currentUser, setCurrentUser] = useState<{ username: string; role: string } | null>(null)
   const [users, setUsers] = useState<User[]>([])
   const [showForm, setShowForm] = useState(false)
   const [editingUser, setEditingUser] = useState<string | null>(null)
+  const [searchTerm, setSearchTerm] = useState("")
   const [formData, setFormData] = useState({
     username: "",
     nome: "",
     password: "",
     role: "usuario" as "admin" | "usuario",
+    setor: "",
     mustChangePassword: true,
   })
 
@@ -53,6 +58,16 @@ export default function UsuariosPage() {
     setCurrentUser(parsedUser)
     loadUsers()
   }, [router])
+
+  useEffect(() => {
+    if (!showForm || !formRef.current) return
+
+    const frame = window.requestAnimationFrame(() => {
+      formRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })
+    })
+
+    return () => window.cancelAnimationFrame(frame)
+  }, [showForm, editingUser])
 
   const loadUsers = async () => {
     try {
@@ -77,6 +92,7 @@ export default function UsuariosPage() {
       nome: user.nome,
       password: "",
       role: user.role,
+      setor: user.setor || "",
       mustChangePassword: user.mustChangePassword ?? true,
     })
     setShowForm(true)
@@ -85,6 +101,12 @@ export default function UsuariosPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
+
+    if (!formData.setor) {
+      alert("Selecione um setor para o usuário")
+      setIsLoading(false)
+      return
+    }
 
     try {
       if (editingUser) {
@@ -96,6 +118,7 @@ export default function UsuariosPage() {
           username: formData.username,
           nome: formData.nome,
           role: formData.role,
+          setor: formData.setor,
           mustChangePassword:
             formData.role === "usuario" ? formData.mustChangePassword : false,
         }
@@ -125,6 +148,7 @@ export default function UsuariosPage() {
               username: formData.username,
               nome: formData.nome,
               role: formData.role,
+              setor: formData.setor,
               mustChangePassword:
                 formData.role === "usuario" ? formData.mustChangePassword : false,
             }),
@@ -140,6 +164,7 @@ export default function UsuariosPage() {
             nome: formData.nome,
             password: formData.password,
             role: formData.role,
+            setor: formData.setor,
             mustChangePassword:
               formData.role === "usuario" ? formData.mustChangePassword : false,
           }),
@@ -161,7 +186,7 @@ export default function UsuariosPage() {
       await loadUsers()
 
       // Resetar form
-      setFormData({ username: "", nome: "", password: "", role: "usuario", mustChangePassword: true })
+      setFormData({ username: "", nome: "", password: "", role: "usuario", setor: "", mustChangePassword: true })
       setShowForm(false)
       setEditingUser(null)
     } catch (err) {
@@ -207,10 +232,19 @@ export default function UsuariosPage() {
   }
 
   const handleCancel = () => {
-    setFormData({ username: "", nome: "", password: "", role: "usuario", mustChangePassword: true })
+    setFormData({ username: "", nome: "", password: "", role: "usuario", setor: "", mustChangePassword: true })
     setShowForm(false)
     setEditingUser(null)
   }
+
+  const normalizedSearch = searchTerm.trim().toLowerCase()
+  const filteredUsers = users.filter((user) => {
+    if (!normalizedSearch) return true
+
+    return [user.nome, user.username, user.setor, user.role].some((value) =>
+      String(value ?? "").toLowerCase().includes(normalizedSearch),
+    )
+  })
 
   if (!currentUser) return null
 
@@ -227,7 +261,7 @@ export default function UsuariosPage() {
             onClick={() => {
               setShowForm(!showForm)
               setEditingUser(null)
-              setFormData({ username: "", nome: "", password: "", role: "usuario", mustChangePassword: true })
+              setFormData({ username: "", nome: "", password: "", role: "usuario", setor: "", mustChangePassword: true })
             }}
           >
             <Plus className="h-4 w-4 mr-2" />
@@ -237,7 +271,7 @@ export default function UsuariosPage() {
 
         {/* Form */}
         {showForm && (
-          <Card>
+          <Card ref={formRef}>
             <CardHeader>
               <CardTitle>{editingUser ? "Editar Usuário" : "Criar Novo Usuário"}</CardTitle>
               <CardDescription>
@@ -305,6 +339,27 @@ export default function UsuariosPage() {
                   </SelectContent>
                 </Select>
               </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="setor">Setor</Label>
+                <Select
+                  value={formData.setor}
+                  onValueChange={(value) => setFormData({ ...formData, setor: value })}
+                  disabled={isLoading}
+                >
+                  <SelectTrigger id="setor">
+                    <SelectValue placeholder="Selecione o setor" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {USER_SECTORS.map((setor) => (
+                      <SelectItem key={setor} value={setor}>
+                        {setor}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
               {formData.role === "usuario" && (
                 <div className="flex items-center justify-between rounded-lg border p-3">
                   <div className="space-y-1">
@@ -344,53 +399,70 @@ export default function UsuariosPage() {
         {/* Users List */}
         <Card>
           <CardHeader>
-            <CardTitle>Usuários do Sistema ({users.length})</CardTitle>
+            <CardTitle>Usuários do Sistema ({filteredUsers.length})</CardTitle>
             <CardDescription>Lista de todos os usuários cadastrados</CardDescription>
           </CardHeader>
           <CardContent>
+            <div className="relative mb-4">
+              <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+              <Input
+                placeholder="Pesquisar por nome, usuário, setor ou perfil"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-9"
+              />
+            </div>
+
             <div className="space-y-3">
-              {users.map((user) => (
-                <div
-                  key={user.id}
-                  className="flex items-center justify-between p-4 rounded-lg border hover:bg-accent transition-colors"
-                >
-                  <div className="flex items-center gap-4">
-                    <div
-                      className={`h-10 w-10 rounded-full flex items-center justify-center ${
-                        user.role === "admin" ? "bg-primary" : "bg-muted"
-                      }`}
-                    >
-                      {user.role === "admin" ? (
-                        <Shield className="h-5 w-5 text-primary-foreground" />
-                      ) : (
-                        <UserIcon className="h-5 w-5 text-muted-foreground" />
+              {filteredUsers.length > 0 ? (
+                filteredUsers.map((user) => (
+                  <div
+                    key={user.id}
+                    className="flex items-center justify-between p-4 rounded-lg border hover:bg-accent transition-colors"
+                  >
+                    <div className="flex items-center gap-4">
+                      <div
+                        className={`h-10 w-10 rounded-full flex items-center justify-center ${
+                          user.role === "admin" ? "bg-primary" : "bg-muted"
+                        }`}
+                      >
+                        {user.role === "admin" ? (
+                          <Shield className="h-5 w-5 text-primary-foreground" />
+                        ) : (
+                          <UserIcon className="h-5 w-5 text-muted-foreground" />
+                        )}
+                      </div>
+                      <div>
+                        <p className="font-medium">{user.nome}</p>
+                        <p className="text-sm text-muted-foreground">@{user.username}</p>
+                        <p className="text-sm text-muted-foreground">Setor: {user.setor}</p>
+                        <p className="text-xs text-muted-foreground">
+                          {user.role === "admin" ? "Administrador" : "Usuário"}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      {user.username === "admin" && (
+                        <span className="text-xs px-3 py-1 rounded-full bg-primary/10 text-primary font-medium">
+                          Padrão
+                        </span>
+                      )}
+                      <Button variant="outline" size="sm" onClick={() => handleEdit(user)}>
+                        <Pencil className="h-4 w-4" />
+                      </Button>
+                      {user.username !== "admin" && (
+                        <Button variant="outline" size="sm" onClick={() => handleDelete(user.username)}>
+                          <Trash2 className="h-4 w-4 text-destructive" />
+                        </Button>
                       )}
                     </div>
-                    <div>
-                      <p className="font-medium">{user.nome}</p>
-                      <p className="text-sm text-muted-foreground">@{user.username}</p>
-                      <p className="text-xs text-muted-foreground">
-                        {user.role === "admin" ? "Administrador" : "Usuário"}
-                      </p>
-                    </div>
                   </div>
-                  <div className="flex items-center gap-2">
-                    {user.username === "admin" && (
-                      <span className="text-xs px-3 py-1 rounded-full bg-primary/10 text-primary font-medium">
-                        Padrão
-                      </span>
-                    )}
-                    <Button variant="outline" size="sm" onClick={() => handleEdit(user)}>
-                      <Pencil className="h-4 w-4" />
-                    </Button>
-                    {user.username !== "admin" && (
-                      <Button variant="outline" size="sm" onClick={() => handleDelete(user.username)}>
-                        <Trash2 className="h-4 w-4 text-destructive" />
-                      </Button>
-                    )}
-                  </div>
+                ))
+              ) : (
+                <div className="rounded-lg border border-dashed p-6 text-center text-sm text-muted-foreground">
+                  Nenhum usuário encontrado para a pesquisa informada.
                 </div>
-              ))}
+              )}
             </div>
           </CardContent>
         </Card>

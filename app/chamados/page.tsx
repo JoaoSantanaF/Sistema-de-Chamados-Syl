@@ -188,10 +188,16 @@ export default function ChamadosPage() {
   }
 
   const handleDelete = async (id: string) => {
+    if (!user || user.role !== "admin") {
+      alert("Somente administradores podem excluir chamados")
+      return
+    }
+
     if (!confirm("Tem certeza que deseja excluir este chamado?")) return
 
     try {
-      const response = await fetch(`/api/chamados/${id}`, {
+      const params = new URLSearchParams({ actorUsername: user.username })
+      const response = await fetch(`/api/chamados/${id}?${params.toString()}`, {
         method: "DELETE",
       })
 
@@ -381,7 +387,7 @@ export default function ChamadosPage() {
                             <Eye className="h-4 w-4" />
                           </Link>
                         </Button>
-                        {(user.role === "admin" || ticket.solicitante === user.username) && (
+                        {user.role === "admin" && (
                           <Button variant="outline" size="sm" onClick={() => handleDelete(ticket.id)}>
                             <Trash2 className="h-4 w-4 text-destructive" />
                           </Button>

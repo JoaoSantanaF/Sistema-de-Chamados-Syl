@@ -146,6 +146,11 @@ export default function ChamadoDetalhePage() {
   const handleAddComentario = async () => {
     if (!ticket || !user || !novoComentario.trim()) return
 
+    if (user.role !== "admin") {
+      alert("Somente administradores podem adicionar comentários de andamento")
+      return
+    }
+
     try {
       const response = await fetch(`/api/chamados/${ticket.id}/comentarios`, {
         method: "POST",
@@ -175,18 +180,19 @@ export default function ChamadoDetalhePage() {
   const handleSave = async () => {
     if (!ticket || !user) return
 
+    if (user.role !== "admin") {
+      alert("Somente administradores podem alterar chamados")
+      return
+    }
+
     try {
       const updates: Record<string, unknown> = {
         titulo: formData.titulo,
         descricao: formData.descricao,
-        solicitante: formData.solicitante,
         prioridade: formData.prioridade,
         status: formData.status,
-      }
-
-      if (user.role === "admin") {
-        updates.responsavel = formData.responsavel || null
-        updates.actorUsername = user.username
+        responsavel: formData.responsavel || null,
+        actorUsername: user.username,
       }
 
       if (formData.status === "Fechado") {
@@ -199,15 +205,25 @@ export default function ChamadoDetalhePage() {
         body: JSON.stringify(updates),
       })
 
+      const data = await response.json()
+
       if (!response.ok) {
-        const data = await response.json()
         console.error("Erro ao atualizar chamado:", data.error)
         alert("Erro ao atualizar chamado: " + data.error)
         return
       }
 
       alert("Chamado atualizado com sucesso!")
-      setTicket({ ...ticket, ...updates })
+      setTicket(data)
+      setFormData({
+        titulo: data.titulo,
+        descricao: data.descricao,
+        solicitante: data.solicitante,
+        prioridade: data.prioridade,
+        status: data.status,
+        responsavel: data.responsavel || "",
+        solucao: data.solucao || "",
+      })
     } catch (error) {
       console.error("Erro ao atualizar chamado:", error)
       alert("Erro ao atualizar chamado")
@@ -215,7 +231,12 @@ export default function ChamadoDetalhePage() {
   }
 
   const handleToggleStatus = async () => {
-    if (!ticket) return
+    if (!ticket || !user) return
+
+    if (user.role !== "admin") {
+      alert("Somente administradores podem alterar o status do chamado")
+      return
+    }
 
     const newStatus =
       ticket.status === "Fechado"
@@ -227,6 +248,7 @@ export default function ChamadoDetalhePage() {
     try {
       const updates = {
         status: newStatus,
+        actorUsername: user.username,
       }
 
       const response = await fetch(`/api/chamados/${ticket.id}`, {
@@ -235,15 +257,20 @@ export default function ChamadoDetalhePage() {
         body: JSON.stringify(updates),
       })
 
+      const data = await response.json()
+
       if (!response.ok) {
-        const data = await response.json()
         console.error("Erro ao atualizar status:", data.error)
         alert("Erro ao atualizar status: " + data.error)
         return
       }
 
-      setTicket({ ...ticket, status: newStatus as "Aberto" | "Em andamento" | "Fechado" })
-      setFormData({ ...formData, status: newStatus })
+      setTicket(data)
+      setFormData((prev) => ({
+        ...prev,
+        status: data.status,
+        solucao: data.solucao || prev.solucao,
+      }))
     } catch (error) {
       console.error("Erro ao atualizar status:", error)
       alert("Erro ao atualizar status")
@@ -253,14 +280,15 @@ export default function ChamadoDetalhePage() {
   const handleDelete = async () => {
     if (!ticket || !user) return
 
-    if (user.role !== "admin" && ticket.solicitante !== user.username) {
-      alert("Você não tem permissão para excluir este chamado")
+    if (user.role !== "admin") {
+      alert("Somente administradores podem excluir chamados")
       return
     }
 
     if (confirm("Tem certeza que deseja excluir este chamado?")) {
       try {
-        const response = await fetch(`/api/chamados/${ticket.id}`, {
+        const params = new URLSearchParams({ actorUsername: user.username })
+        const response = await fetch(`/api/chamados/${ticket.id}?${params.toString()}`, {
           method: "DELETE",
         })
 
@@ -281,6 +309,8 @@ export default function ChamadoDetalhePage() {
 
   if (loading) return null
   if (!user || !ticket) return null
+
+  const isAdmin = user.role === "admin"
 
   return (
     <DashboardLayout>
@@ -304,25 +334,27 @@ export default function ChamadoDetalhePage() {
               </div>
             </div>
             <div className="flex gap-2 p-3">
-              <Button variant="outline" onClick={handleToggleStatus}>
-                {ticket.status === "Fechado" ? (
-                  <>
-                    <LockOpen className="h-4 w-4 mr-2" />
-                    Reabrir
-                  </>
-                ) : ticket.status === "Aberto" ? (
-                  <>
-                    <MessageSquare className="h-4 w-4 mr-2" />
-                    Marcar em andamento
-                  </>
-                ) : (
-                  <>
-                    <Lock className="h-4 w-4 mr-2" />
-                    Fechar
-                  </>
-                )}
-              </Button>
-              {(user.role === "admin" || ticket.solicitante === user.username) && (
+              {isAdmin && (
+                <Button variant="outline" onClick={handleToggleStatus}>
+                  {ticket.status === "Fechado" ? (
+                    <>
+                      <LockOpen className="h-4 w-4 mr-2" />
+                      Reabrir
+                    </>
+                  ) : ticket.status === "Aberto" ? (
+                    <>
+                      <MessageSquare className="h-4 w-4 mr-2" />
+                      Marcar em andamento
+                    </>
+                  ) : (
+                    <>
+                      <Lock className="h-4 w-4 mr-2" />
+                      Fechar
+                    </>
+                  )}
+                </Button>
+              )}
+              {isAdmin && (
                 <Button variant="destructive" onClick={handleDelete}>
                   <Trash2 className="h-4 w-4 mr-2" />
                   Excluir
@@ -346,6 +378,8 @@ export default function ChamadoDetalhePage() {
                   id="titulo"
                   value={formData.titulo}
                   onChange={(e) => setFormData({ ...formData, titulo: e.target.value })}
+                  readOnly={!isAdmin}
+                  disabled={!isAdmin}
                 />
               </div>
 
@@ -356,6 +390,8 @@ export default function ChamadoDetalhePage() {
                   value={formData.descricao}
                   onChange={(e) => setFormData({ ...formData, descricao: e.target.value })}
                   rows={5}
+                  readOnly={!isAdmin}
+                  disabled={!isAdmin}
                 />
               </div>
 
@@ -364,11 +400,12 @@ export default function ChamadoDetalhePage() {
                 <Input
                   id="solicitante"
                   value={formData.solicitante}
-                  onChange={(e) => setFormData({ ...formData, solicitante: e.target.value })}
+                  readOnly
+                  disabled
                 />
               </div>
 
-              {user.role === "admin" && (
+              {isAdmin && (
                 <div className="space-y-2">
                   <Label htmlFor="responsavel">Técnico responsável</Label>
                   <Select
@@ -430,7 +467,7 @@ export default function ChamadoDetalhePage() {
                 </div>
               </div>
 
-              {formData.status === "Fechado" && (
+              {isAdmin && formData.status === "Fechado" && (
                 <div className="space-y-2">
                   <Label htmlFor="solucao">Solução Final</Label>
                   <Textarea
@@ -446,10 +483,10 @@ export default function ChamadoDetalhePage() {
               )}
 
               <div className="flex gap-3 pt-4">
-                <Button onClick={handleSave} className="flex-1">
+                {isAdmin && <Button onClick={handleSave} className="flex-1">
                   <Save className="h-4 w-4 mr-2" />
                   Salvar Alterações
-                </Button>
+                </Button>}
                 <Button variant="outline" asChild className="flex-1 bg-transparent">
                   <Link href="/chamados">Voltar</Link>
                 </Button>
@@ -488,7 +525,7 @@ export default function ChamadoDetalhePage() {
                 </p>
               )}
 
-              {formData.status !== "Fechado" && (
+              {isAdmin && formData.status !== "Fechado" && (
                 <div className="space-y-3 pt-4 border-t">
                   <Label htmlFor="novo-comentario">Adicionar Comentário de Andamento</Label>
                   <Textarea
@@ -505,7 +542,7 @@ export default function ChamadoDetalhePage() {
                 </div>
               )}
 
-              {formData.status === "Fechado" && (
+              {isAdmin && formData.status === "Fechado" && (
                 <p className="text-sm text-muted-foreground text-center py-4 border-t">
                   Chamado fechado. Reabra o chamado para adicionar novos comentários.
                 </p>
