@@ -1,9 +1,8 @@
 #!/bin/sh
+set -e
 
-# Carrega variáveis do .env se existir
-if [ -f .env ]; then
-  export $(cat .env | grep -v '^#' | xargs)
+if [ -f /app/.env ]; then
+  export $(grep -v '^#' /app/.env | xargs)
 fi
 
-# Inicia o servidor
 exec node server.js

@@ -1,14 +1,15 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { useRouter } from "next/navigation"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import {
   AlertCircle,
   Calendar,
   CheckCircle,
   ChevronRight,
   Clock,
+  Download,
   Edit2,
   FileText,
   Plus,
@@ -20,47 +21,45 @@ import {
 import { DashboardLayout } from "@/components/dashboard-layout"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Checkbox } from "@/components/ui/checkbox"
 import { Input } from "@/components/ui/input"
 import { Progress } from "@/components/ui/progress"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@/components/ui/sheet"
+import {
+  buildMonthlyMetrics,
+  formatMonthLabel,
+  normalizeCriticality,
+  normalizeText,
+  parseMaintenanceDate,
+  type MaintenanceAsset,
+  type MaintenanceCycle,
+} from "@/lib/maintenance-report"
 
-interface Asset {
-  id: string
-  nome: string
-  tipo: string
-  localizacao: string
-  criticidade: string
-  proxima_manutencao?: string
+interface Asset extends MaintenanceAsset {
   status: string
-  created_at?: string
 }
 
-interface MaintenanceCycle {
-  id: string
-  ativo_id: string
+interface MaintenanceCycleWithAsset extends MaintenanceCycle {
   ativo_nome: string
-  data_proxima_manutencao: string
-  data_fim?: string | null
-  status: string
-}
-
-interface MonthlyHistoryItem {
-  monthKey: string
-  monthLabel: string
-  requiredCount: number
-  completedCount: number
-  completionRate: number
-  goalReached: boolean
 }
 
 const MONTHLY_GOAL = 90
+
+function escapeHtml(value: string) {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;")
+}
 
 export default function ManutencaoPage() {
   const router = useRouter()
   const [user, setUser] = useState<{ username: string; role: string } | null>(null)
   const [assets, setAssets] = useState<Asset[]>([])
-  const [cycles, setCycles] = useState<MaintenanceCycle[]>([])
+  const [cycles, setCycles] = useState<MaintenanceCycleWithAsset[]>([])
   const [filteredAssets, setFilteredAssets] = useState<Asset[]>([])
   const [searchTerm, setSearchTerm] = useState("")
   const [criticalityFilter, setCriticalityFilter] = useState<string>("Todas")
@@ -68,6 +67,8 @@ export default function ManutencaoPage() {
   const [startDate, setStartDate] = useState("")
   const [endDate, setEndDate] = useState("")
   const [isPendingSheetOpen, setIsPendingSheetOpen] = useState(false)
+  const [selectedReportMonths, setSelectedReportMonths] = useState<string[]>([])
+  const [isExportingReport, setIsExportingReport] = useState(false)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
@@ -86,7 +87,7 @@ export default function ManutencaoPage() {
     }
 
     setUser(parsedUser)
-    loadMaintenanceData()
+    void loadMaintenanceData()
   }, [router])
 
   useEffect(() => {
@@ -124,25 +125,6 @@ export default function ManutencaoPage() {
     }
   }
 
-  const normalizeText = (value: string) =>
-    value
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "")
-      .replace(/Ã/g, "a")
-      .replace(/Â/g, "")
-      .toLowerCase()
-      .trim()
-
-  const normalizeCriticality = (value: string) => {
-    const normalized = normalizeText(value)
-
-    if (normalized.includes("alta")) return "Alta"
-    if (normalized.includes("media")) return "Media"
-    if (normalized.includes("baixa")) return "Baixa"
-
-    return value
-  }
-
   const filterAssets = () => {
     let filtered = [...assets]
 
@@ -167,7 +149,7 @@ export default function ManutencaoPage() {
         (asset) =>
           asset.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
           asset.tipo.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          asset.localizacao.toLowerCase().includes(searchTerm.toLowerCase()),
+          asset.localizacao.toLowerCase().includes(searchTerm.toLowerCase())
       )
     }
 
@@ -234,173 +216,185 @@ export default function ManutencaoPage() {
     }
   }
 
-  const today = new Date()
-  const currentMonth = today.getMonth()
-  const currentYear = today.getFullYear()
-  const currentMonthKey = `${currentYear}-${String(currentMonth + 1).padStart(2, "0")}`
-  const monthLabel = today.toLocaleDateString("pt-BR", { month: "long", year: "numeric" })
-
-  const parseDate = (dateValue?: string | null) => {
-    if (!dateValue) return null
-    const normalized = dateValue.includes("T") ? dateValue : `${dateValue}T00:00:00`
-    const parsed = new Date(normalized)
-    return Number.isNaN(parsed.getTime()) ? null : parsed
+  const monthlyMetrics = buildMonthlyMetrics(assets, cycles)
+  const currentMonthKey = `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, "0")}`
+  const currentMonthMetrics = monthlyMetrics.find((item) => item.monthKey === currentMonthKey) ?? {
+    monthLabel: new Date().toLocaleDateString("pt-BR", { month: "long", year: "numeric" }),
+    requiredCount: 0,
+    completedCount: 0,
+    pendingCount: 0,
+    completionRate: 0,
+    goalReached: false,
+    assets: [],
   }
-
-  const isDateInCurrentMonth = (dateValue?: string | null) => {
-    const parsedDate = parseDate(dateValue)
-    if (!parsedDate) return false
-
-    return parsedDate.getMonth() === currentMonth && parsedDate.getFullYear() === currentYear
-  }
-
-  const isSameMonth = (referenceDate: Date, dateValue?: string | null) => {
-    const parsedDate = parseDate(dateValue)
-    if (!parsedDate) return false
-
-    return (
-      parsedDate.getMonth() === referenceDate.getMonth() &&
-      parsedDate.getFullYear() === referenceDate.getFullYear()
-    )
-  }
-
-  const isAssetActiveInMonth = (asset: Asset, referenceDate: Date) => {
-    const createdAt = parseDate(asset.created_at)
-    if (!createdAt) return true
-
-    return createdAt <= referenceDate
-  }
-
-  const completedCyclesThisMonth = cycles.filter((cycle) => {
-    const normalizedStatus = normalizeText(cycle.status)
-    return normalizedStatus.includes("conclu") && isDateInCurrentMonth(cycle.data_fim)
-  })
-
-  const completedCurrentMonthAssetIds = new Set(completedCyclesThisMonth.map((cycle) => cycle.ativo_id))
-  const cycleRequiredCurrentMonthAssetIds = new Set(
-    cycles.filter((cycle) => isDateInCurrentMonth(cycle.data_proxima_manutencao)).map((cycle) => cycle.ativo_id),
-  )
-  const highPriorityCurrentMonthAssetIds = new Set(
-    assets
-      .filter((asset) => normalizeCriticality(asset.criticidade) === "Alta" && isAssetActiveInMonth(asset, today))
-      .map((asset) => asset.id),
-  )
-  const requiredCurrentMonthAssetIds = new Set([...cycleRequiredCurrentMonthAssetIds, ...highPriorityCurrentMonthAssetIds])
-  const currentMonthCompletedCount = [...completedCurrentMonthAssetIds].filter((assetId) =>
-    requiredCurrentMonthAssetIds.has(assetId),
-  ).length
-  const monthlyCompletionRate =
-    requiredCurrentMonthAssetIds.size > 0
-      ? Math.round((currentMonthCompletedCount / requiredCurrentMonthAssetIds.size) * 100)
-      : 0
-  const goalReached = requiredCurrentMonthAssetIds.size > 0 && monthlyCompletionRate >= MONTHLY_GOAL
   const remainingForGoal =
-    requiredCurrentMonthAssetIds.size > 0
-      ? Math.max(Math.ceil((MONTHLY_GOAL / 100) * requiredCurrentMonthAssetIds.size) - currentMonthCompletedCount, 0)
+    currentMonthMetrics.requiredCount > 0
+      ? Math.max(Math.ceil((MONTHLY_GOAL / 100) * currentMonthMetrics.requiredCount) - currentMonthMetrics.completedCount, 0)
       : 0
 
-  const pendingAssets = assets
-    .filter((asset) => {
-      if (normalizeCriticality(asset.criticidade) === "Alta") {
-        return isAssetActiveInMonth(asset, today) && !completedCurrentMonthAssetIds.has(asset.id)
-      }
-
-      const nextMaintenanceDate = parseDate(asset.proxima_manutencao)
-      return nextMaintenanceDate ? nextMaintenanceDate <= today : false
-    })
+  const pendingAssets = currentMonthMetrics.assets
+    .filter((asset) => !asset.completed)
+    .map((metricAsset) => assets.find((asset) => asset.id === metricAsset.assetId))
+    .filter((asset): asset is Asset => Boolean(asset))
     .sort((a, b) => {
       const isHighA = normalizeCriticality(a.criticidade) === "Alta"
       const isHighB = normalizeCriticality(b.criticidade) === "Alta"
       if (isHighA !== isHighB) return isHighA ? -1 : 1
 
-      const dateA = parseDate(a.proxima_manutencao)?.getTime() ?? Number.MAX_SAFE_INTEGER
-      const dateB = parseDate(b.proxima_manutencao)?.getTime() ?? Number.MAX_SAFE_INTEGER
+      const dateA = parseMaintenanceDate(a.proxima_manutencao)?.getTime() ?? Number.MAX_SAFE_INTEGER
+      const dateB = parseMaintenanceDate(b.proxima_manutencao)?.getTime() ?? Number.MAX_SAFE_INTEGER
       return dateA - dateB
     })
 
-  const monthlyHistoryMap = new Map<string, MonthlyHistoryItem>()
+  const reportMonthOptions = monthlyMetrics.slice(0, 12)
 
-  cycles.forEach((cycle) => {
-    const dueDate = parseDate(cycle.data_proxima_manutencao)
-    if (!dueDate) return
+  useEffect(() => {
+    if (reportMonthOptions.length > 0 && selectedReportMonths.length === 0) {
+      const defaultMonth =
+        reportMonthOptions.find((item) => item.monthKey === currentMonthKey)?.monthKey ?? reportMonthOptions[0].monthKey
 
-    const monthKey = `${dueDate.getFullYear()}-${String(dueDate.getMonth() + 1).padStart(2, "0")}`
-    const normalizedStatus = normalizeText(cycle.status)
-    const completedInSameMonth = normalizedStatus.includes("conclu") && isSameMonth(dueDate, cycle.data_fim)
-    const existingMonth = monthlyHistoryMap.get(monthKey)
-
-    if (existingMonth) {
-      existingMonth.requiredCount += 1
-      if (completedInSameMonth) existingMonth.completedCount += 1
-      return
+      setSelectedReportMonths([defaultMonth])
     }
+  }, [currentMonthKey, reportMonthOptions, selectedReportMonths.length])
 
-    monthlyHistoryMap.set(monthKey, {
-      monthKey,
-      monthLabel: dueDate.toLocaleDateString("pt-BR", { month: "long", year: "numeric" }),
-      requiredCount: 1,
-      completedCount: completedInSameMonth ? 1 : 0,
-      completionRate: 0,
-      goalReached: false,
-    })
-  })
-
-  assets
-    .filter((asset) => normalizeCriticality(asset.criticidade) === "Alta")
-    .forEach((asset) => {
-      const createdAt = parseDate(asset.created_at) ?? today
-      const startMonth = new Date(createdAt.getFullYear(), createdAt.getMonth(), 1)
-      const endMonth = new Date(currentYear, currentMonth, 1)
-
-      for (let monthCursor = new Date(startMonth); monthCursor <= endMonth; monthCursor.setMonth(monthCursor.getMonth() + 1)) {
-        const monthKey = `${monthCursor.getFullYear()}-${String(monthCursor.getMonth() + 1).padStart(2, "0")}`
-        const monthDate = new Date(monthCursor.getFullYear(), monthCursor.getMonth(), 1)
-        const completedInMonth = cycles.some((cycle) => {
-          const normalizedStatus = normalizeText(cycle.status)
-          return cycle.ativo_id === asset.id && normalizedStatus.includes("conclu") && isSameMonth(monthDate, cycle.data_fim)
-        })
-
-        const existingMonth = monthlyHistoryMap.get(monthKey)
-
-        if (existingMonth) {
-          existingMonth.requiredCount += 1
-          if (completedInMonth) existingMonth.completedCount += 1
-        } else {
-          monthlyHistoryMap.set(monthKey, {
-            monthKey,
-            monthLabel: monthDate.toLocaleDateString("pt-BR", { month: "long", year: "numeric" }),
-            requiredCount: 1,
-            completedCount: completedInMonth ? 1 : 0,
-            completionRate: 0,
-            goalReached: false,
-          })
-        }
+  const toggleReportMonth = (monthKey: string, checked: boolean) => {
+    setSelectedReportMonths((current) => {
+      if (checked) {
+        return current.includes(monthKey) ? current : [...current, monthKey]
       }
-    })
 
-  if (requiredCurrentMonthAssetIds.size > 0) {
-    monthlyHistoryMap.set(currentMonthKey, {
-      monthKey: currentMonthKey,
-      monthLabel,
-      requiredCount: requiredCurrentMonthAssetIds.size,
-      completedCount: currentMonthCompletedCount,
-      completionRate: 0,
-      goalReached: false,
+      return current.filter((item) => item !== monthKey)
     })
   }
 
-  const monthlyHistory = [...monthlyHistoryMap.values()]
-    .map((item) => {
-      const completionRate =
-        item.requiredCount > 0 ? Math.round((item.completedCount / item.requiredCount) * 100) : 0
+  const handleExportReport = async () => {
+    if (selectedReportMonths.length === 0) {
+      alert("Selecione pelo menos um mes para exportar o relatorio.")
+      return
+    }
 
-      return {
-        ...item,
-        completionRate,
-        goalReached: item.requiredCount > 0 && completionRate >= MONTHLY_GOAL,
-      }
-    })
-    .sort((a, b) => b.monthKey.localeCompare(a.monthKey))
+    try {
+      setIsExportingReport(true)
+      const selectedMetrics = buildMonthlyMetrics(assets, cycles, {
+        monthKeys: [...selectedReportMonths].sort(),
+      })
+
+      const sections = selectedMetrics
+        .map((item) => {
+          const rows = item.assets
+            .map(
+              (asset) => `
+                <tr>
+                  <td>${escapeHtml(asset.assetName)}</td>
+                  <td>${escapeHtml(asset.assetType)}</td>
+                  <td>${escapeHtml(asset.location)}</td>
+                  <td>${escapeHtml(asset.criticality)}</td>
+                  <td>${escapeHtml(asset.dueDateLabel)}</td>
+                  <td>${asset.completed ? "Realizada" : "Pendente"}</td>
+                  <td>${asset.completionDate ? escapeHtml(String(asset.completionDate).split("T")[0]) : "-"}</td>
+                </tr>
+              `
+            )
+            .join("")
+
+          return `
+            <section class="month-section">
+              <div class="month-header">
+                <div>
+                  <h2>${escapeHtml(item.monthLabel)}</h2>
+                  <p>${item.completedCount} realizada(s) de ${item.requiredCount} prevista(s)</p>
+                </div>
+                <div class="summary">
+                  <span>Taxa: ${item.completionRate}%</span>
+                  <span>Pendentes: ${item.pendingCount}</span>
+                </div>
+              </div>
+              <div class="stats-grid">
+                <div class="stat-card">
+                  <strong>${item.requiredCount}</strong>
+                  <span>Previstas</span>
+                </div>
+                <div class="stat-card">
+                  <strong>${item.completedCount}</strong>
+                  <span>Realizadas</span>
+                </div>
+                <div class="stat-card">
+                  <strong>${item.pendingCount}</strong>
+                  <span>Pendentes</span>
+                </div>
+              </div>
+              <table>
+                <thead>
+                  <tr>
+                    <th>Maquina</th>
+                    <th>Tipo</th>
+                    <th>Localizacao</th>
+                    <th>Criticidade</th>
+                    <th>Referencia</th>
+                    <th>Status no mes</th>
+                    <th>Data de conclusao</th>
+                  </tr>
+                </thead>
+                <tbody>${rows}</tbody>
+              </table>
+            </section>
+          `
+        })
+        .join("")
+
+      const html = `
+        <!DOCTYPE html>
+        <html lang="pt-BR">
+          <head>
+            <meta charset="UTF-8" />
+            <title>Relatorio de manutencao preventiva</title>
+            <style>
+              body { font-family: Arial, sans-serif; margin: 32px; color: #1f2937; background: #f8fafc; }
+              h1 { margin-bottom: 8px; }
+              .subtitle { margin-bottom: 24px; color: #475569; }
+              .month-section { background: #ffffff; border: 1px solid #dbe4ee; border-radius: 16px; padding: 20px; margin-bottom: 20px; }
+              .month-header { display: flex; justify-content: space-between; gap: 16px; align-items: center; margin-bottom: 16px; }
+              .month-header h2 { margin: 0 0 4px; text-transform: capitalize; }
+              .month-header p, .summary span { margin: 0; color: #475569; }
+              .summary { display: flex; flex-direction: column; gap: 6px; text-align: right; }
+              .stats-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-bottom: 16px; }
+              .stat-card { background: #eff6ff; border-radius: 12px; padding: 12px; }
+              .stat-card strong { display: block; font-size: 24px; }
+              .stat-card span { color: #475569; }
+              table { width: 100%; border-collapse: collapse; font-size: 14px; }
+              th, td { padding: 10px 12px; border-bottom: 1px solid #e2e8f0; text-align: left; }
+              th { background: #f1f5f9; }
+            </style>
+          </head>
+          <body>
+            <h1>Relatorio de manutencao preventiva</h1>
+            <p class="subtitle">
+              Gerado em ${new Date().toLocaleString("pt-BR")} para os meses:
+              ${selectedReportMonths.map((monthKey) => formatMonthLabel(monthKey)).join(", ")}
+            </p>
+            ${sections}
+          </body>
+        </html>
+      `
+
+      const blob = new Blob([html], { type: "text/html;charset=utf-8" })
+      const fileName = `relatorio-manutencao-${[...selectedReportMonths].sort().join("_")}.html`
+
+      const objectUrl = window.URL.createObjectURL(blob)
+      const link = document.createElement("a")
+      link.href = objectUrl
+      link.download = fileName
+      document.body.appendChild(link)
+      link.click()
+      link.remove()
+      window.URL.revokeObjectURL(objectUrl)
+    } catch (error) {
+      console.error("Erro ao exportar relatorio:", error)
+      alert("Nao foi possivel exportar o relatorio.")
+    } finally {
+      setIsExportingReport(false)
+    }
+  }
 
   if (!user) return null
 
@@ -474,29 +468,29 @@ export default function ManutencaoPage() {
             </CardContent>
           </Card>
 
-          <Card className={goalReached ? "border-success/40 bg-success/5" : "border-warning/40 bg-warning/5"}>
+          <Card className={currentMonthMetrics.goalReached ? "border-success/40 bg-success/5" : "border-warning/40 bg-warning/5"}>
             <CardHeader className="space-y-3 pb-2">
               <div className="flex items-center justify-between gap-3">
                 <div>
                   <CardTitle className="text-sm font-medium">Meta mensal</CardTitle>
-                  <CardDescription className="capitalize">{monthLabel}</CardDescription>
+                  <CardDescription className="capitalize">{currentMonthMetrics.monthLabel}</CardDescription>
                 </div>
-                <Target className={goalReached ? "h-4 w-4 text-success" : "h-4 w-4 text-warning"} />
+                <Target className={currentMonthMetrics.goalReached ? "h-4 w-4 text-success" : "h-4 w-4 text-warning"} />
               </div>
-              <Progress value={monthlyCompletionRate} className="h-3" />
+              <Progress value={currentMonthMetrics.completionRate} className="h-3" />
             </CardHeader>
             <CardContent className="space-y-2">
               <div className="flex items-end justify-between gap-3">
-                <div className="text-2xl font-bold">{monthlyCompletionRate}%</div>
+                <div className="text-2xl font-bold">{currentMonthMetrics.completionRate}%</div>
                 <span className="text-xs font-medium text-muted-foreground">Meta {MONTHLY_GOAL}%</span>
               </div>
               <p className="text-sm text-muted-foreground">
-                {currentMonthCompletedCount} de {requiredCurrentMonthAssetIds.size} maquinas necessarias concluidas neste mes.
+                {currentMonthMetrics.completedCount} de {currentMonthMetrics.requiredCount} maquinas necessarias concluidas neste mes.
               </p>
-              <p className={`text-xs font-medium ${goalReached ? "text-success" : "text-warning"}`}>
-                {requiredCurrentMonthAssetIds.size === 0
+              <p className={`text-xs font-medium ${currentMonthMetrics.goalReached ? "text-success" : "text-warning"}`}>
+                {currentMonthMetrics.requiredCount === 0
                   ? "Nenhuma manutencao prevista para este mes."
-                  : goalReached
+                  : currentMonthMetrics.goalReached
                     ? "Meta atingida no periodo."
                     : `Faltam ${remainingForGoal} manutencao(oes) para bater a meta.`}
               </p>
@@ -621,7 +615,7 @@ export default function ManutencaoPage() {
                         <Calendar className="mr-1 inline h-3 w-3" />
                         Proxima manutencao:{" "}
                         {asset.proxima_manutencao
-                          ? parseDate(asset.proxima_manutencao)?.toLocaleDateString("pt-BR")
+                          ? parseMaintenanceDate(asset.proxima_manutencao)?.toLocaleDateString("pt-BR")
                           : normalizeCriticality(asset.criticidade) === "Alta"
                             ? "Obrigatoria neste mes"
                             : "Nao agendada"}
@@ -659,44 +653,54 @@ export default function ManutencaoPage() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Historico mensal de manutencao</CardTitle>
+            <CardTitle>Relatorio mensal de manutencao</CardTitle>
             <CardDescription>
-              Registro por competencia, considerando apenas as maquinas que realmente precisavam de manutencao em cada mes.
+              Selecione um ou mais meses para baixar um arquivo com pendencias e realizacoes por competencia.
             </CardDescription>
           </CardHeader>
-          <CardContent>
-            {monthlyHistory.length === 0 ? (
+          <CardContent className="space-y-4">
+            {reportMonthOptions.length === 0 ? (
               <div className="rounded-lg border border-dashed p-6 text-sm text-muted-foreground">
-                Ainda nao ha ciclos suficientes para montar o historico mensal.
+                Ainda nao ha dados suficientes para gerar o relatorio.
               </div>
             ) : (
-              <div className="space-y-3">
-                {monthlyHistory.map((item) => (
-                  <div key={item.monthKey} className="rounded-lg border p-4">
-                    <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-                      <div>
-                        <p className="text-base font-semibold capitalize">{item.monthLabel}</p>
+              <>
+                <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+                  {reportMonthOptions.map((item) => (
+                    <label
+                      key={item.monthKey}
+                      className="flex cursor-pointer items-start gap-3 rounded-lg border p-4 transition-colors hover:bg-accent"
+                    >
+                      <Checkbox
+                        checked={selectedReportMonths.includes(item.monthKey)}
+                        onCheckedChange={(checked) => toggleReportMonth(item.monthKey, Boolean(checked))}
+                      />
+                      <div className="space-y-1">
+                        <p className="font-medium capitalize">{item.monthLabel}</p>
                         <p className="text-sm text-muted-foreground">
-                          {item.completedCount} de {item.requiredCount} manutencoes necessarias concluidas
+                          {item.completedCount} realizadas de {item.requiredCount} previstas
                         </p>
+                        <p className="text-xs text-muted-foreground">{item.pendingCount} pendente(s)</p>
                       </div>
-                      <div className="flex items-center gap-3">
-                        <span className="text-2xl font-bold">{item.completionRate}%</span>
-                        <span
-                          className={`rounded-full px-3 py-1 text-xs font-medium ${
-                            item.goalReached ? "bg-success/10 text-success" : "bg-warning/10 text-warning"
-                          }`}
-                        >
-                          {item.goalReached ? "Meta batida" : "Abaixo da meta"}
-                        </span>
-                      </div>
-                    </div>
-                    <div className="mt-3">
-                      <Progress value={item.completionRate} className="h-2.5" />
-                    </div>
+                    </label>
+                  ))}
+                </div>
+
+                <div className="flex flex-col gap-3 rounded-lg border bg-muted/30 p-4 md:flex-row md:items-center md:justify-between">
+                  <div>
+                    <p className="font-medium">Exportacao selecionada</p>
+                    <p className="text-sm text-muted-foreground">
+                      {selectedReportMonths.length === 0
+                        ? "Nenhum mes selecionado."
+                        : `${selectedReportMonths.length} mes(es) selecionado(s) para baixar em HTML.`}
+                    </p>
                   </div>
-                ))}
-              </div>
+                  <Button onClick={handleExportReport} disabled={isExportingReport || selectedReportMonths.length === 0}>
+                    <Download className="mr-2 h-4 w-4" />
+                    {isExportingReport ? "Gerando..." : "Baixar Relatorio"}
+                  </Button>
+                </div>
+              </>
             )}
           </CardContent>
         </Card>
@@ -725,9 +729,7 @@ export default function ManutencaoPage() {
           <SheetContent className="w-full sm:max-w-xl">
             <SheetHeader>
               <SheetTitle>Maquinas pendentes de manutencao</SheetTitle>
-              <SheetDescription>
-                {pendingAssets.length} maquina(s) com manutencao obrigatoria no mes ou vencida.
-              </SheetDescription>
+              <SheetDescription>{pendingAssets.length} maquina(s) pendente(s) no mes selecionado.</SheetDescription>
             </SheetHeader>
             <div className="flex-1 space-y-3 overflow-y-auto px-4 pb-4">
               {pendingAssets.length === 0 ? (
@@ -751,7 +753,7 @@ export default function ManutencaoPage() {
                         {normalizeCriticality(asset.criticidade) === "Alta"
                           ? "Obrigatoria neste mes"
                           : asset.proxima_manutencao
-                            ? `Prevista para ${parseDate(asset.proxima_manutencao)?.toLocaleDateString("pt-BR")}`
+                            ? `Prevista para ${parseMaintenanceDate(asset.proxima_manutencao)?.toLocaleDateString("pt-BR")}`
                             : "Data nao informada"}
                       </p>
                     </div>

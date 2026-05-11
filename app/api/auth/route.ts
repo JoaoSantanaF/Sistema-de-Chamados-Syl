@@ -15,7 +15,6 @@ interface Usuario {
 // POST /api/auth - Login
 export async function POST(request: NextRequest) {
   try {
-    await ensureUserSectorColumn()
 
     const { username, password } = await request.json()
 

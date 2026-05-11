@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import { useRouter } from "next/navigation"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { TicketIcon, CheckCircle2, Clock, AlertCircle, Plus } from "lucide-react"
@@ -21,9 +21,24 @@ interface Ticket {
   updated_at: string
 }
 
+interface UserSession {
+  username: string
+  role: string
+  nome: string
+}
+
+const POLLING_INTERVAL_MS = 5000
+
+function getLatestUpdatedAt(items: Ticket[]) {
+  return items.reduce<string | null>((latest, item) => {
+    if (!latest) return item.updated_at
+    return new Date(item.updated_at).getTime() > new Date(latest).getTime() ? item.updated_at : latest
+  }, null)
+}
+
 export default function DashboardPage() {
   const router = useRouter()
-  const [user, setUser] = useState<{ username: string; role: string; nome: string } | null>(null)
+  const [user, setUser] = useState<UserSession | null>(null)
   const [tickets, setTickets] = useState<Ticket[]>([])
   const [stats, setStats] = useState({
     total: 0,
@@ -31,6 +46,76 @@ export default function DashboardPage() {
     emAndamento: 0,
     fechados: 0,
   })
+  const isFetchingRef = useRef(false)
+  const pollingStateRef = useRef<{ count: number; lastUpdated: string | null }>({ count: 0, lastUpdated: null })
+
+  const syncTicketsState = useCallback((nextTickets: Ticket[]) => {
+    setTickets(nextTickets)
+
+    const abertos = nextTickets.filter((t) => t.status === "Aberto").length
+    const emAndamento = nextTickets.filter((t) => t.status === "Em andamento").length
+    const fechados = nextTickets.filter((t) => t.status === "Fechado").length
+
+    setStats({
+      total: nextTickets.length,
+      abertos,
+      emAndamento,
+      fechados,
+    })
+
+    pollingStateRef.current = {
+      count: nextTickets.length,
+      lastUpdated: getLatestUpdatedAt(nextTickets),
+    }
+  }, [])
+
+  const loadTickets = useCallback(
+    async (
+      currentUser: UserSession,
+      options?: {
+        useKnownState?: boolean
+      },
+    ) => {
+      if (isFetchingRef.current) return
+
+      isFetchingRef.current = true
+
+      try {
+        const params = new URLSearchParams({
+          role: currentUser.role,
+          solicitante: currentUser.username,
+        })
+
+        if (options?.useKnownState) {
+          params.set("knownCount", String(pollingStateRef.current.count))
+
+          if (pollingStateRef.current.lastUpdated) {
+            params.set("knownLastUpdated", pollingStateRef.current.lastUpdated)
+          }
+        }
+
+        const response = await fetch(`/api/chamados?${params.toString()}`, {
+          cache: "no-store",
+        })
+
+        if (response.status === 304) return
+
+        const data = await response.json()
+
+        if (!response.ok) {
+          console.error("Erro ao carregar chamados:", data.error)
+          return
+        }
+
+        syncTicketsState(data || [])
+      } catch (err) {
+        console.error("Erro ao carregar tickets:", err)
+      } finally {
+        isFetchingRef.current = false
+      }
+    },
+    [syncTicketsState],
+  )
 
   useEffect(() => {
     const userData = localStorage.getItem("user")
@@ -38,45 +123,34 @@ export default function DashboardPage() {
       router.push("/login")
       return
     }
-    const parsedUser = JSON.parse(userData)
+    const parsedUser = JSON.parse(userData) as UserSession
     setUser(parsedUser)
 
-    loadTickets(parsedUser)
-  }, [router])
+    void loadTickets(parsedUser)
+  }, [loadTickets, router])
 
-  const loadTickets = async (currentUser: { username: string; role: string }) => {
-    try {
-      const params = new URLSearchParams({
-        role: currentUser.role,
-        solicitante: currentUser.username,
-      })
+  useEffect(() => {
+    if (!user) return
 
-      const response = await fetch(`/api/chamados?${params}`)
-      const data = await response.json()
-
-      if (!response.ok) {
-        console.error("Erro ao carregar chamados:", data.error)
-        return
-      }
-
-      const allTickets = data || []
-      setTickets(allTickets)
-
-      // Calcular estatísticas
-      const abertos = allTickets.filter((t: Ticket) => t.status === "Aberto").length
-      const emAndamento = allTickets.filter((t: Ticket) => t.status === "Em andamento").length
-      const fechados = allTickets.filter((t: Ticket) => t.status === "Fechado").length
-
-      setStats({
-        total: allTickets.length,
-        abertos,
-        emAndamento,
-        fechados,
-      })
-    } catch (err) {
-      console.error("Erro ao carregar tickets:", err)
+    const refreshTickets = () => {
+      if (document.visibilityState !== "visible") return
+      void loadTickets(user, { useKnownState: true })
     }
-  }
+
+    const intervalId = window.setInterval(refreshTickets, POLLING_INTERVAL_MS)
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "visible") {
+        void loadTickets(user, { useKnownState: true })
+      }
+    }
+
+    document.addEventListener("visibilitychange", handleVisibilityChange)
+
+    return () => {
+      window.clearInterval(intervalId)
+      document.removeEventListener("visibilitychange", handleVisibilityChange)
+    }
+  }, [loadTickets, user])
 
   if (!user) return null
 

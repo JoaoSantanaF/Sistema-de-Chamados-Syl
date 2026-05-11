@@ -38,6 +38,27 @@ const CHECKLIST_PADRAO = [
   'Atualizar campo "Ultima Preventiva"',
 ]
 
+async function createPendingCycle(ativoId: string, dataProximaManutencao: string) {
+  const novoCiclo = await insert<CicloManutencao>('ciclos_manutencao', {
+    ativo_id: ativoId,
+    data_proxima_manutencao: dataProximaManutencao,
+    status: 'Pendente',
+    observacoes: null,
+  })
+
+  if (!novoCiclo) return null
+
+  for (const descricao of CHECKLIST_PADRAO) {
+    await insert('itens_checklist', {
+      ciclo_id: novoCiclo.id,
+      descricao,
+      concluido: false,
+    })
+  }
+
+  return novoCiclo
+}
+
 // GET /api/ativos/[id] - Buscar ativo por ID (com ciclos de manutencao)
 export async function GET(
   request: NextRequest,
@@ -103,7 +124,8 @@ export async function PUT(
     if (data.ultima_manutencao !== undefined) updateData.ultima_manutencao = data.ultima_manutencao
     if (data.proxima_manutencao !== undefined) updateData.proxima_manutencao = data.proxima_manutencao
 
-    const isMaintenanceCompletion = data.ultima_manutencao !== undefined
+    const isManualDateEdit = Boolean(data.manual_date_edit)
+    const isMaintenanceCompletion = data.ultima_manutencao !== undefined && !isManualDateEdit
 
     if (isMaintenanceCompletion) {
       const executionDate = new Date(`${data.ultima_manutencao}T00:00:00`)
@@ -144,21 +166,26 @@ export async function PUT(
         observacoes: data.observacoes || null,
       })
 
-      const novoCiclo = await insert<CicloManutencao>('ciclos_manutencao', {
-        ativo_id: id,
-        data_proxima_manutencao: proximaManutencao,
-        status: 'Pendente',
-        observacoes: null,
-      })
+      await createPendingCycle(id, proximaManutencao)
+    }
 
-      if (novoCiclo) {
-        for (const descricao of CHECKLIST_PADRAO) {
-          await insert('itens_checklist', {
-            ciclo_id: novoCiclo.id,
-            descricao,
-            concluido: false,
-          })
-        }
+    if (isManualDateEdit && data.proxima_manutencao !== undefined) {
+      const cicloPendente = await queryOne<CicloManutencao>(
+        "SELECT * FROM ciclos_manutencao WHERE ativo_id = $1 AND status = 'Pendente' ORDER BY data_proxima_manutencao ASC LIMIT 1",
+        [id]
+      )
+
+      if (cicloPendente) {
+        await update<CicloManutencao>(
+          'ciclos_manutencao',
+          {
+            data_proxima_manutencao: data.proxima_manutencao,
+          },
+          'id',
+          cicloPendente.id
+        )
+      } else if (data.proxima_manutencao) {
+        await createPendingCycle(id, data.proxima_manutencao)
       }
     }
 

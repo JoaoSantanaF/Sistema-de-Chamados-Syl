@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { query, queryOne, insert } from '@/lib/db'
+import { sendNewChamadoNotification } from '@/lib/email'
+
+export const runtime = 'nodejs'
 
 interface Chamado {
   id: string
@@ -118,6 +121,12 @@ export async function POST(request: NextRequest) {
     }
 
     const chamado = await insert<Chamado>('chamados', insertData)
+
+    if (chamado) {
+      sendNewChamadoNotification(chamado).catch((error) => {
+        console.error('Erro ao enviar aviso de novo chamado:', error)
+      })
+    }
 
     return NextResponse.json(chamado, { status: 201 })
   } catch (error) {
