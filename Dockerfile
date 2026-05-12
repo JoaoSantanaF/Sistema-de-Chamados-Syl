@@ -30,18 +30,15 @@ COPY --from=builder /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
-<<<<<<< Updated upstream
 # Copiar .env e entrypoint
 COPY --chown=nextjs:nodejs .env .env
 COPY --chown=nextjs:nodejs entrypoint.sh entrypoint.sh
 RUN sed -i 's/\r//' entrypoint.sh
 RUN chmod +x entrypoint.sh
-=======
 COPY --chown=nextjs:nodejs .env /app/.env
 COPY --chown=nextjs:nodejs entrypoint.sh /app/entrypoint.sh
 
 RUN sed -i 's/\r$//' /app/entrypoint.sh && chmod +x /app/entrypoint.sh
->>>>>>> Stashed changes
 
 USER nextjs
 
