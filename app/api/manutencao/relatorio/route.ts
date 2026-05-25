@@ -1,7 +1,12 @@
 import { NextRequest, NextResponse } from "next/server"
 
 import { query } from "@/lib/db"
-import { buildMonthlyMetrics, type MaintenanceAsset, type MaintenanceCycle } from "@/lib/maintenance-report"
+import {
+  buildMonthlyMetrics,
+  formatMaintenanceDate,
+  type MaintenanceAsset,
+  type MaintenanceCycle,
+} from "@/lib/maintenance-report"
 
 function escapeHtml(value: string) {
   return value
@@ -40,7 +45,7 @@ export async function GET(request: NextRequest) {
                 <td>${escapeHtml(asset.criticality)}</td>
                 <td>${escapeHtml(asset.dueDateLabel)}</td>
                 <td>${asset.completed ? "Realizada" : "Pendente"}</td>
-                <td>${asset.completionDate ? escapeHtml(String(asset.completionDate).split("T")[0]) : "-"}</td>
+                <td>${asset.completionDate ? escapeHtml(formatMaintenanceDate(asset.completionDate) ?? "-") : "-"}</td>
               </tr>
             `
           )

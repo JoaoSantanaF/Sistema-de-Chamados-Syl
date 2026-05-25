@@ -41,7 +41,7 @@ export async function GET(request: NextRequest) {
     }
 
     if (status) {
-      conditions.push(`c.status = $${paramIndex++}`)
+      conditions.push(`lower(c.status) = lower($${paramIndex++})`)
       params.push(status)
     }
 

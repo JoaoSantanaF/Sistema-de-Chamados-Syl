@@ -28,6 +28,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@/components/ui/sheet"
 import {
   buildMonthlyMetrics,
+  formatMaintenanceDate,
   formatMonthLabel,
   normalizeCriticality,
   normalizeText,
@@ -291,7 +292,7 @@ export default function ManutencaoPage() {
                   <td>${escapeHtml(asset.criticality)}</td>
                   <td>${escapeHtml(asset.dueDateLabel)}</td>
                   <td>${asset.completed ? "Realizada" : "Pendente"}</td>
-                  <td>${asset.completionDate ? escapeHtml(String(asset.completionDate).split("T")[0]) : "-"}</td>
+                  <td>${asset.completionDate ? escapeHtml(formatMaintenanceDate(asset.completionDate) ?? "-") : "-"}</td>
                 </tr>
               `
             )
@@ -615,7 +616,7 @@ export default function ManutencaoPage() {
                         <Calendar className="mr-1 inline h-3 w-3" />
                         Proxima manutencao:{" "}
                         {asset.proxima_manutencao
-                          ? parseMaintenanceDate(asset.proxima_manutencao)?.toLocaleDateString("pt-BR")
+                          ? formatMaintenanceDate(asset.proxima_manutencao)
                           : normalizeCriticality(asset.criticidade) === "Alta"
                             ? "Obrigatoria neste mes"
                             : "Nao agendada"}
@@ -753,7 +754,7 @@ export default function ManutencaoPage() {
                         {normalizeCriticality(asset.criticidade) === "Alta"
                           ? "Obrigatoria neste mes"
                           : asset.proxima_manutencao
-                            ? `Prevista para ${parseMaintenanceDate(asset.proxima_manutencao)?.toLocaleDateString("pt-BR")}`
+                            ? `Prevista para ${formatMaintenanceDate(asset.proxima_manutencao)}`
                             : "Data nao informada"}
                       </p>
                     </div>

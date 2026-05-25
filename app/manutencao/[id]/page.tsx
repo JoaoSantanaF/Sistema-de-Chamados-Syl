@@ -9,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { ArrowLeft, Save, CheckCircle2, AlertCircle, FileText } from "lucide-react"
 import Link from "next/link"
 import { DashboardLayout } from "@/components/dashboard-layout"
+import { formatMaintenanceDate } from "@/lib/maintenance-report"
 
 interface Asset {
   id: string
@@ -26,6 +27,10 @@ interface ChecklistItem {
   descricao: string
   concluido: boolean
   observacoes?: string
+}
+
+function isPendingCycle(cycle: any) {
+  return String(cycle?.status ?? "").toLowerCase() === "pendente"
 }
 
 export default function MaintenanceDetailPage() {
@@ -66,7 +71,7 @@ export default function MaintenanceDetailPage() {
       setAsset(data)
 
       // Find pending cycle
-      const pendingCycle = data.ciclos?.find((c: any) => c.status === "Pendente")
+      const pendingCycle = data.ciclos?.find(isPendingCycle)
       if (pendingCycle) {
         setCurrentCycleId(pendingCycle.id)
 
@@ -127,8 +132,7 @@ export default function MaintenanceDetailPage() {
       const allCompleted = checklistItems.every((item) => item.concluido)
 
       if (allCompleted) {
-        // Update asset with last maintenance date
-        await fetch(`/api/ativos/${assetId}`, {
+        const response = await fetch(`/api/ativos/${assetId}`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -138,6 +142,11 @@ export default function MaintenanceDetailPage() {
             observacoes: generalObservations,
           }),
         })
+        const data = await response.json()
+
+        if (!response.ok) {
+          throw new Error(data.error || "Erro ao concluir manutencao")
+        }
 
         alert("Manutenção concluída com sucesso!")
         router.push("/manutencao")
@@ -219,7 +228,7 @@ export default function MaintenanceDetailPage() {
               <div>
                 <p className="text-sm text-muted-foreground">Última Manutenção</p>
                 <p className="font-medium">
-                  {asset.ultima_manutencao ? new Date(asset.ultima_manutencao).toLocaleDateString("pt-BR") : "N/A"}
+                  {formatMaintenanceDate(asset.ultima_manutencao) ?? "N/A"}
                 </p>
               </div>
             </div>

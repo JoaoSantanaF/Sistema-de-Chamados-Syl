@@ -13,6 +13,35 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
+function formatDateForDisplay(dateValue?: string | null) {
+  if (!dateValue) return ""
+
+  const isoDate = String(dateValue).match(/^(\d{4})-(\d{2})-(\d{2})/)
+  if (isoDate) {
+    const [, year, month, day] = isoDate
+    return `${day}/${month}/${year}`
+  }
+
+  return String(dateValue)
+}
+
+function parseDisplayDate(dateValue: string) {
+  const trimmed = dateValue.trim()
+  if (!trimmed) return null
+
+  const brDate = trimmed.match(/^(\d{2})\/(\d{2})\/(\d{4})$/)
+  if (brDate) {
+    const [, day, month, year] = brDate
+    return `${year}-${month}-${day}`
+  }
+
+  if (/^\d{4}-\d{2}-\d{2}$/.test(trimmed)) {
+    return trimmed
+  }
+
+  return undefined
+}
+
 export default function EditAssetPage() {
   const router = useRouter()
   const params = useParams()
@@ -66,8 +95,8 @@ export default function EditAssetPage() {
         localizacao: data.localizacao ?? "",
         criticidade: data.criticidade ?? "Media",
         status: data.status ?? "Operacional",
-        ultima_manutencao: data.ultima_manutencao ? String(data.ultima_manutencao).split("T")[0] : "",
-        proxima_manutencao: data.proxima_manutencao ? String(data.proxima_manutencao).split("T")[0] : "",
+        ultima_manutencao: formatDateForDisplay(data.ultima_manutencao),
+        proxima_manutencao: formatDateForDisplay(data.proxima_manutencao),
       })
     } catch (err) {
       console.error("Erro ao carregar ativo:", err)
@@ -88,6 +117,14 @@ export default function EditAssetPage() {
     setSaving(true)
 
     try {
+      const ultimaManutencao = parseDisplayDate(formData.ultima_manutencao)
+      const proximaManutencao = parseDisplayDate(formData.proxima_manutencao)
+
+      if (ultimaManutencao === undefined || proximaManutencao === undefined) {
+        alert("Informe as datas no formato dia/mes/ano, por exemplo 18/05/2026.")
+        return
+      }
+
       const response = await fetch(`/api/ativos/${assetId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
@@ -97,8 +134,8 @@ export default function EditAssetPage() {
           localizacao: formData.localizacao,
           criticidade: formData.criticidade,
           status: formData.status,
-          ultima_manutencao: formData.ultima_manutencao || null,
-          proxima_manutencao: formData.proxima_manutencao || null,
+          ultima_manutencao: ultimaManutencao,
+          proxima_manutencao: proximaManutencao,
           manual_date_edit: true,
         }),
       })
@@ -205,7 +242,8 @@ export default function EditAssetPage() {
                 <div>
                   <label className="text-sm font-medium">Ultima manutencao</label>
                   <Input
-                    type="date"
+                    inputMode="numeric"
+                    placeholder="dd/mm/aaaa"
                     value={formData.ultima_manutencao}
                     onChange={(event) => setFormData({ ...formData, ultima_manutencao: event.target.value })}
                   />
@@ -214,7 +252,8 @@ export default function EditAssetPage() {
                 <div>
                   <label className="text-sm font-medium">Proxima manutencao</label>
                   <Input
-                    type="date"
+                    inputMode="numeric"
+                    placeholder="dd/mm/aaaa"
                     value={formData.proxima_manutencao}
                     onChange={(event) => setFormData({ ...formData, proxima_manutencao: event.target.value })}
                   />

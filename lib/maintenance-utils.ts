@@ -1,11 +1,23 @@
 // Maintenance intervals by criticality (in days)
 export const CRITICALITY_INTERVALS = {
   Alta: 30, // Criticidade 1
-  Média: 60, // Criticidade 2
+  Media: 60, // Criticidade 2
   Baixa: 180, // Criticidade 3
 } as const
 
 export type Criticality = keyof typeof CRITICALITY_INTERVALS
+
+function normalizeCriticality(criticality: string): Criticality {
+  const normalized = criticality
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .trim()
+
+  if (normalized.includes("alta")) return "Alta"
+  if (normalized.includes("baixa")) return "Baixa"
+  return "Media"
+}
 
 const BRAZILIAN_HOLIDAYS_2025_2026 = [
   "2025-01-01", // Ano Novo
@@ -80,8 +92,8 @@ export function addBusinessDays(startDate: Date, days: number): Date {
 /**
  * Calculate the next maintenance date based on criticality (business days only)
  */
-export function calculateNextMaintenanceDate(criticality: Criticality, fromDate: Date = new Date()): Date {
-  const days = CRITICALITY_INTERVALS[criticality]
+export function calculateNextMaintenanceDate(criticality: string, fromDate: Date = new Date()): Date {
+  const days = CRITICALITY_INTERVALS[normalizeCriticality(criticality)]
   return addBusinessDays(fromDate, days)
 }
 
@@ -89,8 +101,20 @@ export function calculateNextMaintenanceDate(criticality: Criticality, fromDate:
  * Format a date to Brazilian locale string
  */
 export function formatDateBR(date: Date | string): string {
+  if (typeof date === 'string') {
+    const isoDate = date.match(/^(\d{4})-(\d{2})-(\d{2})/)
+    if (isoDate) {
+      const [, year, month, day] = isoDate
+      return `${day}/${month}/${year}`
+    }
+  }
+
   const d = typeof date === 'string' ? new Date(date) : date
-  return d.toLocaleDateString('pt-BR')
+  return new Intl.DateTimeFormat('pt-BR', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+  }).format(d)
 }
 
 /**
@@ -99,10 +123,10 @@ export function formatDateBR(date: Date | string): string {
 export function getCriticalityLabel(criticidade: string): string {
   const labels: Record<string, string> = {
     Alta: "Alta (30 dias)",
-    Média: "Média (60 dias)",
+    Media: "Media (60 dias)",
     Baixa: "Baixa (180 dias)",
   }
-  return labels[criticidade] || "Desconhecida"
+  return labels[normalizeCriticality(criticidade)] || "Desconhecida"
 }
 
 /**
@@ -111,8 +135,8 @@ export function getCriticalityLabel(criticidade: string): string {
 export function getCriticalityColor(criticidade: string): string {
   const colors: Record<string, string> = {
     Alta: "bg-destructive/10 text-destructive",
-    Média: "bg-warning/10 text-warning",
+    Media: "bg-warning/10 text-warning",
     Baixa: "bg-success/10 text-success",
   }
-  return colors[criticidade] || "bg-muted text-muted-foreground"
+  return colors[normalizeCriticality(criticidade)] || "bg-muted text-muted-foreground"
 }

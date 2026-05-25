@@ -68,6 +68,25 @@ export function parseMaintenanceDate(dateValue?: string | null) {
   return Number.isNaN(parsed.getTime()) ? null : parsed
 }
 
+export function formatMaintenanceDate(dateValue?: string | null) {
+  if (!dateValue) return null
+
+  const isoDate = String(dateValue).match(/^(\d{4})-(\d{2})-(\d{2})/)
+  if (isoDate) {
+    const [, year, month, day] = isoDate
+    return `${day}/${month}/${year}`
+  }
+
+  const parsed = parseMaintenanceDate(dateValue)
+  if (!parsed) return null
+
+  return new Intl.DateTimeFormat("pt-BR", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  }).format(parsed)
+}
+
 export function getMonthKey(date: Date) {
   return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`
 }
@@ -168,7 +187,7 @@ export function buildMonthlyMetrics(
             assetType: asset.tipo,
             location: asset.localizacao,
             criticality: normalizeCriticality(asset.criticidade),
-            dueDateLabel: parseMaintenanceDate(asset.proxima_manutencao)?.toLocaleDateString("pt-BR") ?? "Agendada no mes",
+            dueDateLabel: formatMaintenanceDate(asset.proxima_manutencao) ?? "Agendada no mes",
             completed: false,
           })
         }
@@ -187,7 +206,7 @@ export function buildMonthlyMetrics(
           location: asset.localizacao,
           criticality: normalizeCriticality(asset.criticidade),
           dueDateLabel:
-            parseMaintenanceDate(cycle.data_proxima_manutencao)?.toLocaleDateString("pt-BR") ?? "Agendada no mes",
+            formatMaintenanceDate(cycle.data_proxima_manutencao) ?? "Agendada no mes",
           completed: false,
         })
       })
