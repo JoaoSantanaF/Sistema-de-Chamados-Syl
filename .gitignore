@@ -26,8 +26,9 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# .tar files
+# .tar files (binarios de export Docker, nao versionar)
 helpdesk.tar*
+helpdesk-syl.tar
 
 # IDE or AI files
 .vscode/
