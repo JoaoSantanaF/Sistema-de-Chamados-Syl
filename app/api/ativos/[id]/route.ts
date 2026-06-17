@@ -63,6 +63,20 @@ function isPendingCycle(ciclo: CicloManutencao) {
   return ciclo.status.toLowerCase() === 'pendente'
 }
 
+// Normaliza uma data (Date que o pg retorna para colunas DATE, ou string) para
+// 'YYYY-MM-DD' usando componentes locais, evitando deslocamento de fuso horario.
+function toIsoDate(value: unknown): string | null {
+  if (!value) return null
+  if (value instanceof Date) {
+    const y = value.getFullYear()
+    const m = String(value.getMonth() + 1).padStart(2, '0')
+    const d = String(value.getDate()).padStart(2, '0')
+    return `${y}-${m}-${d}`
+  }
+  const match = String(value).match(/^\d{4}-\d{2}-\d{2}/)
+  return match ? match[0] : null
+}
+
 async function findPendingCycle(ativoId: string, cicloId?: string | null) {
   if (cicloId) {
     const ciclo = await queryOne<CicloManutencao>(
@@ -169,12 +183,6 @@ export async function PUT(
     if (isMaintenanceCompletion) {
       const executionDate = new Date(`${data.ultima_manutencao}T00:00:00`)
       const criticidade = data.criticidade ?? ativoAtual.criticidade
-      const proximaManutencao =
-        data.proxima_manutencao ?? calculateNextMaintenanceDate(criticidade, executionDate).toISOString().split('T')[0]
-
-      updateData.ultima_manutencao = data.ultima_manutencao
-      updateData.proxima_manutencao = proximaManutencao
-      updateData.status = data.status ?? 'Operacional'
 
       const cicloPendente = await findPendingCycle(id, data.ciclo_id)
 
@@ -182,6 +190,7 @@ export async function PUT(
         await completeCycle(cicloPendente, data)
       }
 
+      // Registra a execucao com a data informada e a justificativa (opcional).
       await insert('registros_manutencao', {
         ativo_id: id,
         ciclo_id: cicloPendente?.id ?? null,
@@ -189,9 +198,33 @@ export async function PUT(
         data_execucao: `${data.ultima_manutencao}T00:00:00.000Z`,
         status: 'Conclu\u00edda',
         observacoes: data.observacoes || null,
+        justificativa: data.justificativa || null,
       })
 
-      await createPendingCycle(id, proximaManutencao)
+      // Datas fixas (cronograma da planilha): se ja existe um proximo ciclo
+      // agendado, usa a data dele e NAO recalcula nem cria um novo ciclo.
+      // Sem cronograma futuro, mantem o comportamento antigo (recalcula + cria ciclo).
+      const proximoAgendado = await queryOne<CicloManutencao>(
+        `SELECT * FROM ciclos_manutencao
+         WHERE ativo_id = $1 AND lower(status) = 'pendente'${cicloPendente ? ' AND id <> $2' : ''}
+         ORDER BY data_proxima_manutencao ASC LIMIT 1`,
+        cicloPendente ? [id, cicloPendente.id] : [id]
+      )
+
+      let proximaManutencao: string | null
+      if (proximoAgendado?.data_proxima_manutencao) {
+        proximaManutencao = toIsoDate(proximoAgendado.data_proxima_manutencao)
+      } else {
+        const novaData: string =
+          data.proxima_manutencao ??
+          calculateNextMaintenanceDate(criticidade, executionDate).toISOString().split('T')[0]
+        await createPendingCycle(id, novaData)
+        proximaManutencao = novaData
+      }
+
+      updateData.ultima_manutencao = data.ultima_manutencao
+      updateData.proxima_manutencao = proximaManutencao
+      updateData.status = data.status ?? 'Operacional'
     }
 
     if (isManualDateEdit && data.proxima_manutencao !== undefined) {
