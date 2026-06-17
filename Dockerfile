@@ -13,7 +13,6 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-# Build da aplicação
 RUN npm run build
 
 # Stage 3: Runner (Produção)
@@ -21,12 +20,12 @@ FROM node:20-alpine AS runner
 WORKDIR /app
 
 ENV NODE_ENV=production
+ENV PORT=3000
+ENV HOSTNAME=0.0.0.0
 
-# Criar usuário não-root para segurança
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
-# Copiar arquivos necessários do build standalone
 COPY --from=builder /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
@@ -36,12 +35,13 @@ COPY --chown=nextjs:nodejs .env .env
 COPY --chown=nextjs:nodejs entrypoint.sh entrypoint.sh
 RUN sed -i 's/\r//' entrypoint.sh
 RUN chmod +x entrypoint.sh
+COPY --chown=nextjs:nodejs .env /app/.env
+COPY --chown=nextjs:nodejs entrypoint.sh /app/entrypoint.sh
+
+RUN sed -i 's/\r$//' /app/entrypoint.sh && chmod +x /app/entrypoint.sh
 
 USER nextjs
 
 EXPOSE 3000
 
-ENV PORT=3000
-ENV HOSTNAME="0.0.0.0"
-
-CMD ["./entrypoint.sh"]
+CMD ["/app/entrypoint.sh"]

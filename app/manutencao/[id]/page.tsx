@@ -6,9 +6,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Textarea } from "@/components/ui/textarea"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 import { ArrowLeft, Save, CheckCircle2, AlertCircle, FileText } from "lucide-react"
 import Link from "next/link"
 import { DashboardLayout } from "@/components/dashboard-layout"
+import { formatMaintenanceDate } from "@/lib/maintenance-report"
 
 interface Asset {
   id: string
@@ -28,6 +31,10 @@ interface ChecklistItem {
   observacoes?: string
 }
 
+function isPendingCycle(cycle: any) {
+  return String(cycle?.status ?? "").toLowerCase() === "pendente"
+}
+
 export default function MaintenanceDetailPage() {
   const router = useRouter()
   const params = useParams()
@@ -37,6 +44,10 @@ export default function MaintenanceDetailPage() {
   const [asset, setAsset] = useState<Asset | null>(null)
   const [checklistItems, setChecklistItems] = useState<ChecklistItem[]>([])
   const [generalObservations, setGeneralObservations] = useState("")
+  // Data em que a manutencao foi efetivamente realizada (editavel; default = hoje).
+  const [executionDate, setExecutionDate] = useState(() => new Date().toISOString().split("T")[0])
+  // Justificativa opcional (ex.: execucao fora da data planejada).
+  const [justificativa, setJustificativa] = useState("")
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [currentCycleId, setCurrentCycleId] = useState<string | null>(null)
@@ -66,7 +77,7 @@ export default function MaintenanceDetailPage() {
       setAsset(data)
 
       // Find pending cycle
-      const pendingCycle = data.ciclos?.find((c: any) => c.status === "Pendente")
+      const pendingCycle = data.ciclos?.find(isPendingCycle)
       if (pendingCycle) {
         setCurrentCycleId(pendingCycle.id)
 
@@ -127,17 +138,23 @@ export default function MaintenanceDetailPage() {
       const allCompleted = checklistItems.every((item) => item.concluido)
 
       if (allCompleted) {
-        // Update asset with last maintenance date
-        await fetch(`/api/ativos/${assetId}`, {
+        const response = await fetch(`/api/ativos/${assetId}`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            ultima_manutencao: new Date().toISOString().split("T")[0],
+            // Usa a data informada pelo tecnico (default hoje), nao mais "sempre hoje".
+            ultima_manutencao: executionDate,
             ciclo_id: currentCycleId,
             tecnico: user.username,
             observacoes: generalObservations,
+            justificativa: justificativa || null,
           }),
         })
+        const data = await response.json()
+
+        if (!response.ok) {
+          throw new Error(data.error || "Erro ao concluir manutencao")
+        }
 
         alert("Manutenção concluída com sucesso!")
         router.push("/manutencao")
@@ -219,7 +236,7 @@ export default function MaintenanceDetailPage() {
               <div>
                 <p className="text-sm text-muted-foreground">Última Manutenção</p>
                 <p className="font-medium">
-                  {asset.ultima_manutencao ? new Date(asset.ultima_manutencao).toLocaleDateString("pt-BR") : "N/A"}
+                  {formatMaintenanceDate(asset.ultima_manutencao) ?? "N/A"}
                 </p>
               </div>
             </div>
@@ -270,6 +287,38 @@ export default function MaintenanceDetailPage() {
                 </div>
               ))
             )}
+          </CardContent>
+        </Card>
+
+        {/* Data de execução + justificativa */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Registro da Execução</CardTitle>
+            <CardDescription>
+              Informe a data em que a manutenção foi realizada. A justificativa é opcional
+              (use, por exemplo, quando a execução ocorrer fora da data planejada).
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="space-y-2 max-w-xs">
+              <Label htmlFor="execution-date">Data realizada</Label>
+              <Input
+                id="execution-date"
+                type="date"
+                value={executionDate}
+                onChange={(e) => setExecutionDate(e.target.value)}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="justificativa">Justificativa (opcional)</Label>
+              <Textarea
+                id="justificativa"
+                placeholder="Ex.: manutenção realizada após a data prevista devido a..."
+                value={justificativa}
+                onChange={(e) => setJustificativa(e.target.value)}
+                rows={3}
+              />
+            </div>
           </CardContent>
         </Card>
 
