@@ -9,6 +9,7 @@ export const USER_SECTORS = [
   'Juridico',
   'Logistica',
   'Manutencao',
+  'Medico',
   'PCP',
   'PeD',
   'Processos',
@@ -17,7 +18,6 @@ export const USER_SECTORS = [
   'RH',
   'Seguranca',
   'SGQ',
-  'Teste',
   'TI',
 ] as const
 

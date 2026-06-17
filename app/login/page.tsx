@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Ticket } from "lucide-react"
+import { Ticket, Download } from "lucide-react"
 
 /**
  * Página de login do sistema HelpDesk TI
@@ -171,6 +171,14 @@ export default function LoginPage() {
               {isLoading ? "Entrando..." : "Entrar"}
             </Button>
           </form>
+
+          {/* Link para download do guia de uso */}
+          <div className="mt-6 pt-4 border-t">
+            <a href="/api/downloads/guias?file=guia-completo-uso.pdf" className="flex items-center justify-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors">
+              <Download className="h-4 w-4" />
+              <span>Baixar Guia de Uso</span>
+            </a>
+          </div>
         </CardContent>
       </Card>
     </div>

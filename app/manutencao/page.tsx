@@ -138,11 +138,19 @@ export default function ManutencaoPage() {
     }
 
     if (startDate) {
-      filtered = filtered.filter((asset) => asset.proxima_manutencao && asset.proxima_manutencao >= startDate)
+      filtered = filtered.filter((asset) => {
+        if (!asset.proxima_manutencao) return false
+        const assetMonth = asset.proxima_manutencao.substring(0, 7)
+        return assetMonth >= startDate
+      })
     }
 
     if (endDate) {
-      filtered = filtered.filter((asset) => asset.proxima_manutencao && asset.proxima_manutencao <= endDate)
+      filtered = filtered.filter((asset) => {
+        if (!asset.proxima_manutencao) return false
+        const assetMonth = asset.proxima_manutencao.substring(0, 7)
+        return assetMonth <= endDate
+      })
     }
 
     if (searchTerm) {
@@ -538,21 +546,21 @@ export default function ManutencaoPage() {
 
               <div className="flex flex-col gap-4 md:flex-row">
                 <div className="flex-1">
-                  <label className="mb-1.5 block text-sm text-muted-foreground">Data Inicial</label>
+                  <label className="mb-1.5 block text-sm text-muted-foreground">Mês Inicial</label>
                   <Input
-                    type="date"
+                    type="month"
                     value={startDate}
                     onChange={(event) => setStartDate(event.target.value)}
-                    placeholder="Data inicial"
+                    placeholder="Mês inicial"
                   />
                 </div>
                 <div className="flex-1">
-                  <label className="mb-1.5 block text-sm text-muted-foreground">Data Final</label>
+                  <label className="mb-1.5 block text-sm text-muted-foreground">Mês Final</label>
                   <Input
-                    type="date"
+                    type="month"
                     value={endDate}
                     onChange={(event) => setEndDate(event.target.value)}
-                    placeholder="Data final"
+                    placeholder="Mês final"
                   />
                 </div>
                 {(startDate || endDate || searchTerm || criticalityFilter !== "Todas" || statusFilter !== "Todos") && (
