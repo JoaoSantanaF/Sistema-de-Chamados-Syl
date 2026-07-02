@@ -76,6 +76,22 @@ async function isValidUser(username: string): Promise<boolean> {
   return Boolean(user)
 }
 
+/**
+ * Monta a URL base (protocolo + host) a partir da requisicao real, usando os
+ * headers definidos pelo reverse proxy (x-forwarded-proto / x-forwarded-host)
+ * com fallback para o header Host. Garante que o link do email aponte para o
+ * mesmo endereco por onde o sistema foi acessado, evitando esquema errado.
+ */
+function resolveRequestBaseUrl(request: NextRequest): string | null {
+  const host = request.headers.get('x-forwarded-host') || request.headers.get('host')
+  if (!host) return null
+  const proto =
+    request.headers.get('x-forwarded-proto') ||
+    request.nextUrl.protocol.replace(':', '') ||
+    'http'
+  return `${proto}://${host}`
+}
+
 
 // GET /api/chamados - Listar chamados
 /**
@@ -212,9 +228,12 @@ export async function POST(request: NextRequest) {
     // Insere o chamado no banco de dados
     const chamado = await insert<Chamado>('chamados', insertData)
 
-    // Envia notificação por email para administradores
+    // Envia notificação por email para administradores.
+    // Passa a URL base derivada da requisição para o link apontar para o
+    // endereço/protocolo reais por onde o sistema foi acessado.
     if (chamado) {
-      sendNewChamadoNotification(chamado).catch((error) => {
+      const baseUrl = resolveRequestBaseUrl(request)
+      sendNewChamadoNotification(chamado, baseUrl).catch((error) => {
         console.error('Erro ao enviar aviso de novo chamado:', error)
       })
     }

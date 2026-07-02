@@ -47,12 +47,20 @@ function escapeHtml(value: string | null | undefined): string {
     .replace(/'/g, '&#039;')
 }
 
-function getChamadoUrl(chamadoId: string): string | null {
-  const baseUrl = process.env.APP_BASE_URL?.replace(/\/$/, '')
+// Monta a URL do chamado. Prioriza a base derivada da requisicao (host/protocolo
+// reais por onde o app foi acessado) e so cai para APP_BASE_URL/NEXT_PUBLIC_API_URL
+// como fallback. Evita links quebrados quando APP_BASE_URL aponta para um esquema
+// (ex.: https) diferente do que realmente serve a aplicacao (ex.: http).
+function getChamadoUrl(chamadoId: string, baseUrlOverride?: string | null): string | null {
+  const raw = baseUrlOverride || process.env.APP_BASE_URL || process.env.NEXT_PUBLIC_API_URL
+  const baseUrl = raw?.replace(/\/$/, '')
   return baseUrl ? `${baseUrl}/chamados/${chamadoId}` : null
 }
 
-export async function sendNewChamadoNotification(chamado: ChamadoNotification): Promise<void> {
+export async function sendNewChamadoNotification(
+  chamado: ChamadoNotification,
+  baseUrlOverride?: string | null,
+): Promise<void> {
   const config = getRequiredEmailConfig()
 
   if (!config) {
@@ -60,7 +68,7 @@ export async function sendNewChamadoNotification(chamado: ChamadoNotification): 
     return
   }
 
-  const chamadoUrl = getChamadoUrl(chamado.id)
+  const chamadoUrl = getChamadoUrl(chamado.id, baseUrlOverride)
   const transporter = nodemailer.createTransport({
     host: config.host,
     port: config.port,
