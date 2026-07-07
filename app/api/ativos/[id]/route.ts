@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { queryOne, update, remove, query, insert } from '@/lib/db'
 import { calculateNextMaintenanceDate } from '@/lib/maintenance-utils'
+import { ensureJustificativaColumn } from '@/lib/maintenance-schema.server'
 
 interface Ativo {
   id: string
@@ -183,6 +184,9 @@ export async function PUT(
     if (isMaintenanceCompletion) {
       const executionDate = new Date(`${data.ultima_manutencao}T00:00:00`)
       const criticidade = data.criticidade ?? ativoAtual.criticidade
+
+      // Garante a coluna justificativa (ambientes sem o script 011 aplicado).
+      await ensureJustificativaColumn()
 
       const cicloPendente = await findPendingCycle(id, data.ciclo_id)
 
