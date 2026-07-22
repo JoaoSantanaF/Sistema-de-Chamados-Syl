@@ -4,7 +4,7 @@ import type React from "react"
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
-import { LayoutDashboard, Ticket, LogOut, Menu, X, Users, Moon, Sun, Wrench } from "lucide-react"
+import { LayoutDashboard, Ticket, LogOut, Menu, X, Users, Moon, Sun, Wrench, Info } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 
@@ -51,6 +51,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
           { href: "/usuarios", label: "Usuários", icon: Users },
         ]
       : []),
+    { href: "/sobre", label: "Sobre", icon: Info },
   ]
 
   if (!user) return null
@@ -58,7 +59,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen bg-background">
       <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/80 backdrop-blur-md">
-        <div className="container flex h-16 items-center gap-4">
+        <div className="container mx-auto max-w-7xl flex h-16 items-center gap-4">
           <div className="flex items-center gap-3 flex-shrink-0">
             <img src="/logo-syl.png" alt="SYL Logo" className="h-8 w-8 object-contain" />
             <span className="font-semibold text-lg tracking-tight hidden sm:inline-block text-primary">SYL</span>
@@ -111,7 +112,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
 
       {mobileMenuOpen && (
         <div className="md:hidden border-b bg-card">
-          <nav className="container py-4 flex flex-col gap-2">
+          <nav className="container mx-auto max-w-7xl py-4 flex flex-col gap-2">
             {navItems.map((item) => {
               const Icon = item.icon
               const isActive = pathname === item.href
@@ -134,7 +135,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
         </div>
       )}
 
-      <main className="container py-10 max-w-7xl">{children}</main>
+      <main className="container mx-auto py-10 max-w-7xl">{children}</main>
     </div>
   )
 }
