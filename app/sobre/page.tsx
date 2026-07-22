@@ -51,7 +51,7 @@ export default function SobrePage() {
   return (
     <DashboardLayout>
       {/* Layout compacto: cabe em uma tela sem rolagem em telas de altura padrão. */}
-      <div className="mx-auto max-w-5xl space-y-4">
+      <div className="mx-auto max-w-6xl space-y-4">
         {/* Cabeçalho */}
         <div className="flex items-center gap-3">
           <div className="h-10 w-10 rounded-lg bg-primary flex items-center justify-center flex-shrink-0">

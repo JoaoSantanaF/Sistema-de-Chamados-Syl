@@ -446,7 +446,7 @@ export default function ChamadosPage() {
 
   return (
     <DashboardLayout>
-      <div className="space-y-6">
+      <div className="mx-auto max-w-6xl space-y-6">
         {/* Cabeçalho da página */}
         <div className="flex items-center justify-between">
           <div>

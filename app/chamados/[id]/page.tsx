@@ -314,8 +314,8 @@ export default function ChamadoDetalhePage() {
 
   return (
     <DashboardLayout>
-      <div className="flex justify-center">
-        <div className="space-y-6 max-w-3xl">
+      <div className="mx-auto max-w-3xl">
+        <div className="space-y-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <Button variant="outline" size="icon" asChild>

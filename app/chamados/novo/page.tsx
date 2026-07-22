@@ -183,8 +183,8 @@ export default function NovoChamadoPage() {
 
   return (
     <DashboardLayout>
-      <div className="flex justify-center">
-        <div className="space-y-6 max-w-3xl">
+      <div className="mx-auto max-w-3xl">
+        <div className="space-y-6">
           {/* Cabeçalho da página com título e navegação */}
           <div className="flex items-center gap-4">
             {/* Botão de voltar para lista de chamados */}
