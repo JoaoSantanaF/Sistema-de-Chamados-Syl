@@ -171,7 +171,7 @@ export default function SobrePage() {
               <div className="flex items-center gap-3">
                 <ShieldCheck className="h-5 w-5 text-muted-foreground flex-shrink-0" />
                 <p className="text-sm text-muted-foreground">
-                  Sistema desenvolvido internamente por{" "}
+                  Sistema desenvolvido e mantido internamente por{" "}
                   <span className="font-medium text-foreground">{CREDITOS.autor}</span> — {CREDITOS.area},
                   Grupo SYL.
                 </p>
