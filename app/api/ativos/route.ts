@@ -56,10 +56,21 @@ export async function POST(request: NextRequest) {
 
     const ativo = await insert<Ativo>('ativos', {
       nome: data.nome,
-      tipo: data.tipo,
-      localizacao: data.localizacao,
+      tipo: data.tipo || 'Equipamento',
+      localizacao: data.localizacao || 'TI',
       criticidade: data.criticidade || 'Média',
       status: data.status || 'Operacional',
+      categoria_id: data.categoria_id || null,
+      patrimonio: data.patrimonio || null,
+      numero_serie: data.numero_serie || null,
+      fabricante: data.fabricante || null,
+      modelo: data.modelo || null,
+      data_aquisicao: data.data_aquisicao || null,
+      valor_aquisicao: data.valor_aquisicao || null,
+      garantia_ate: data.garantia_ate || null,
+      responsavel: data.responsavel || null,
+      setor: data.setor || null,
+      observacoes: data.observacoes || null,
       ultima_manutencao: data.ultima_manutencao || null,
       proxima_manutencao: data.proxima_manutencao || null,
       created_at: new Date().toISOString()

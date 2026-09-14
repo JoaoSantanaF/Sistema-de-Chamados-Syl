@@ -4,7 +4,7 @@ import type React from "react"
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
-import { LayoutDashboard, Ticket, LogOut, Menu, X, Users, Moon, Sun, Wrench, Info } from "lucide-react"
+import { LayoutDashboard, Ticket, LogOut, Menu, X, Users, Moon, Sun, Wrench, Info, Boxes } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 
@@ -47,6 +47,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
     { href: "/chamados", label: "Chamados", icon: Ticket },
     ...(user?.role === "admin"
       ? [
+          { href: "/ativos", label: "Ativos", icon: Boxes },
           { href: "/manutencao", label: "Manutenção", icon: Wrench },
           { href: "/usuarios", label: "Usuários", icon: Users },
         ]

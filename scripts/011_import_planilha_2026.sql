@@ -1,4 +1,4 @@
--- ============================================================================
+﻿-- ============================================================================
 -- 011_import_planilha_2026.sql
 -- Importacao da planilha 'Form 139' (manutencao preventiva) - ano 2026.
 -- Gerado por scripts/gen_import_planilha.py. NAO editar a mao.
@@ -45,7 +45,7 @@ BEGIN
          WHERE id = v_ativo_id;
     END IF;
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-01-05', '2026-01-05', 'Concluído')
+    VALUES (v_ativo_id, '2026-01-05', '2026-01-05', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -57,12 +57,12 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-01-05'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-01-05'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-02-05', '2026-02-05', 'Concluído')
+    VALUES (v_ativo_id, '2026-02-05', '2026-02-05', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -74,12 +74,12 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-02-05'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-02-05'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-03-05', '2026-03-05', 'Concluído')
+    VALUES (v_ativo_id, '2026-03-05', '2026-03-05', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -91,12 +91,12 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-03-05'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-03-05'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-04-06', '2026-04-06', 'Concluído')
+    VALUES (v_ativo_id, '2026-04-06', '2026-04-06', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -108,12 +108,12 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-04-06'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-04-06'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-05-06', '2026-05-06', 'Concluído')
+    VALUES (v_ativo_id, '2026-05-06', '2026-05-06', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -125,7 +125,7 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-05-06'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-05-06'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
@@ -228,7 +228,7 @@ BEGIN
          WHERE id = v_ativo_id;
     END IF;
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-01-05', '2026-01-05', 'Concluído')
+    VALUES (v_ativo_id, '2026-01-05', '2026-01-05', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -240,12 +240,12 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-01-05'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-01-05'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-02-05', '2026-02-05', 'Concluído')
+    VALUES (v_ativo_id, '2026-02-05', '2026-02-05', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -257,12 +257,12 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-02-05'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-02-05'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-03-05', '2026-03-05', 'Concluído')
+    VALUES (v_ativo_id, '2026-03-05', '2026-03-05', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -274,12 +274,12 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-03-05'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-03-05'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-04-06', '2026-04-06', 'Concluído')
+    VALUES (v_ativo_id, '2026-04-06', '2026-04-06', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -291,12 +291,12 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-04-06'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-04-06'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-05-06', '2026-05-06', 'Concluído')
+    VALUES (v_ativo_id, '2026-05-06', '2026-05-06', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -308,7 +308,7 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-05-06'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-05-06'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
@@ -411,7 +411,7 @@ BEGIN
          WHERE id = v_ativo_id;
     END IF;
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-01-05', '2026-01-05', 'Concluído')
+    VALUES (v_ativo_id, '2026-01-05', '2026-01-05', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -423,12 +423,12 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-01-05'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-01-05'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-02-05', '2026-02-05', 'Concluído')
+    VALUES (v_ativo_id, '2026-02-05', '2026-02-05', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -440,12 +440,12 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-02-05'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-02-05'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-03-05', '2026-03-05', 'Concluído')
+    VALUES (v_ativo_id, '2026-03-05', '2026-03-05', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -457,12 +457,12 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-03-05'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-03-05'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-04-06', '2026-04-06', 'Concluído')
+    VALUES (v_ativo_id, '2026-04-06', '2026-04-06', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -474,7 +474,7 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-04-06'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-04-06'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
@@ -589,7 +589,7 @@ BEGIN
          WHERE id = v_ativo_id;
     END IF;
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-01-05', '2026-01-05', 'Concluído')
+    VALUES (v_ativo_id, '2026-01-05', '2026-01-05', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -601,12 +601,12 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-01-05'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-01-05'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-02-05', '2026-02-05', 'Concluído')
+    VALUES (v_ativo_id, '2026-02-05', '2026-02-05', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -618,12 +618,12 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-02-05'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-02-05'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-03-05', '2026-03-05', 'Concluído')
+    VALUES (v_ativo_id, '2026-03-05', '2026-03-05', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -635,12 +635,12 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-03-05'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-03-05'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-04-06', '2026-04-06', 'Concluído')
+    VALUES (v_ativo_id, '2026-04-06', '2026-04-06', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -652,7 +652,7 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-04-06'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-04-06'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
@@ -767,7 +767,7 @@ BEGIN
          WHERE id = v_ativo_id;
     END IF;
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-01-05', '2026-01-05', 'Concluído')
+    VALUES (v_ativo_id, '2026-01-05', '2026-01-05', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -779,12 +779,12 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-01-05'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-01-05'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-02-05', '2026-02-05', 'Concluído')
+    VALUES (v_ativo_id, '2026-02-05', '2026-02-05', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -796,12 +796,12 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-02-05'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-02-05'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-03-05', '2026-03-05', 'Concluído')
+    VALUES (v_ativo_id, '2026-03-05', '2026-03-05', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -813,12 +813,12 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-03-05'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-03-05'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-04-06', '2026-04-06', 'Concluído')
+    VALUES (v_ativo_id, '2026-04-06', '2026-04-06', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -830,12 +830,12 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-04-06'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-04-06'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-05-06', '2026-05-06', 'Concluído')
+    VALUES (v_ativo_id, '2026-05-06', '2026-05-06', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -847,12 +847,12 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-05-06'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-05-06'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-06-05', '2026-06-05', 'Concluído')
+    VALUES (v_ativo_id, '2026-06-05', '2026-06-05', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -864,7 +864,7 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-06-05'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-06-05'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
@@ -955,7 +955,7 @@ BEGIN
          WHERE id = v_ativo_id;
     END IF;
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-01-05', '2026-01-05', 'Concluído')
+    VALUES (v_ativo_id, '2026-01-05', '2026-01-05', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -967,12 +967,12 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-01-05'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-01-05'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-02-05', '2026-02-05', 'Concluído')
+    VALUES (v_ativo_id, '2026-02-05', '2026-02-05', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -984,12 +984,12 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-02-05'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-02-05'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-03-05', '2026-03-05', 'Concluído')
+    VALUES (v_ativo_id, '2026-03-05', '2026-03-05', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -1001,12 +1001,12 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-03-05'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-03-05'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-04-06', '2026-04-06', 'Concluído')
+    VALUES (v_ativo_id, '2026-04-06', '2026-04-06', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -1018,12 +1018,12 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-04-06'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-04-06'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-05-06', '2026-05-06', 'Concluído')
+    VALUES (v_ativo_id, '2026-05-06', '2026-05-06', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -1035,7 +1035,7 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-05-06'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-05-06'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
@@ -1138,7 +1138,7 @@ BEGIN
          WHERE id = v_ativo_id;
     END IF;
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-01-05', '2026-01-05', 'Concluído')
+    VALUES (v_ativo_id, '2026-01-05', '2026-01-05', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -1150,12 +1150,12 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-01-05'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-01-05'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-02-05', '2026-02-05', 'Concluído')
+    VALUES (v_ativo_id, '2026-02-05', '2026-02-05', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -1167,12 +1167,12 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-02-05'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-02-05'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-03-05', '2026-03-05', 'Concluído')
+    VALUES (v_ativo_id, '2026-03-05', '2026-03-05', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -1184,12 +1184,12 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-03-05'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-03-05'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-04-06', '2026-04-06', 'Concluído')
+    VALUES (v_ativo_id, '2026-04-06', '2026-04-06', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -1201,12 +1201,12 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-04-06'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-04-06'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-05-06', '2026-05-06', 'Concluído')
+    VALUES (v_ativo_id, '2026-05-06', '2026-05-06', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -1218,12 +1218,12 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-05-06'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-05-06'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-06-05', '2026-06-05', 'Concluído')
+    VALUES (v_ativo_id, '2026-06-05', '2026-06-05', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -1235,7 +1235,7 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-06-05'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-06-05'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
@@ -1326,7 +1326,7 @@ BEGIN
          WHERE id = v_ativo_id;
     END IF;
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-01-05', '2026-01-05', 'Concluído')
+    VALUES (v_ativo_id, '2026-01-05', '2026-01-05', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -1338,12 +1338,12 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-01-05'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-01-05'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-02-05', '2026-02-05', 'Concluído')
+    VALUES (v_ativo_id, '2026-02-05', '2026-02-05', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -1355,12 +1355,12 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-02-05'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-02-05'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-03-05', '2026-03-05', 'Concluído')
+    VALUES (v_ativo_id, '2026-03-05', '2026-03-05', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -1372,12 +1372,12 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-03-05'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-03-05'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-04-06', '2026-04-06', 'Concluído')
+    VALUES (v_ativo_id, '2026-04-06', '2026-04-06', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -1389,12 +1389,12 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-04-06'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-04-06'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-05-06', '2026-05-06', 'Concluído')
+    VALUES (v_ativo_id, '2026-05-06', '2026-05-06', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -1406,12 +1406,12 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-05-06'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-05-06'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-06-05', '2026-06-05', 'Concluído')
+    VALUES (v_ativo_id, '2026-06-05', '2026-06-05', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -1423,7 +1423,7 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-06-05'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-06-05'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
@@ -1514,7 +1514,7 @@ BEGIN
          WHERE id = v_ativo_id;
     END IF;
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-01-05', '2026-01-05', 'Concluído')
+    VALUES (v_ativo_id, '2026-01-05', '2026-01-05', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -1526,12 +1526,12 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-01-05'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-01-05'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-02-05', '2026-02-05', 'Concluído')
+    VALUES (v_ativo_id, '2026-02-05', '2026-02-05', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -1543,12 +1543,12 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-02-05'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-02-05'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-03-05', '2026-03-05', 'Concluído')
+    VALUES (v_ativo_id, '2026-03-05', '2026-03-05', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -1560,7 +1560,7 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-03-05'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-03-05'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
@@ -1577,7 +1577,7 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-05-06', '2026-05-06', 'Concluído')
+    VALUES (v_ativo_id, '2026-05-06', '2026-05-06', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -1589,7 +1589,7 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-05-06'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-05-06'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
@@ -1692,7 +1692,7 @@ BEGIN
          WHERE id = v_ativo_id;
     END IF;
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-01-05', '2026-01-05', 'Concluído')
+    VALUES (v_ativo_id, '2026-01-05', '2026-01-05', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -1704,12 +1704,12 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-01-05'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-01-05'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-02-05', '2026-02-05', 'Concluído')
+    VALUES (v_ativo_id, '2026-02-05', '2026-02-05', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -1721,12 +1721,12 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-02-05'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-02-05'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-03-05', '2026-03-05', 'Concluído')
+    VALUES (v_ativo_id, '2026-03-05', '2026-03-05', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -1738,12 +1738,12 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-03-05'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-03-05'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-04-06', '2026-04-06', 'Concluído')
+    VALUES (v_ativo_id, '2026-04-06', '2026-04-06', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -1755,12 +1755,12 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-04-06'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-04-06'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-05-06', '2026-05-06', 'Concluído')
+    VALUES (v_ativo_id, '2026-05-06', '2026-05-06', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -1772,7 +1772,7 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-05-06'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-05-06'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
@@ -1875,7 +1875,7 @@ BEGIN
          WHERE id = v_ativo_id;
     END IF;
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-01-05', '2026-01-05', 'Concluído')
+    VALUES (v_ativo_id, '2026-01-05', '2026-01-05', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -1887,12 +1887,12 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-01-05'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-01-05'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-02-05', '2026-02-05', 'Concluído')
+    VALUES (v_ativo_id, '2026-02-05', '2026-02-05', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -1904,12 +1904,12 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-02-05'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-02-05'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-03-05', '2026-03-05', 'Concluído')
+    VALUES (v_ativo_id, '2026-03-05', '2026-03-05', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -1921,12 +1921,12 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-03-05'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-03-05'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-04-06', '2026-04-06', 'Concluído')
+    VALUES (v_ativo_id, '2026-04-06', '2026-04-06', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -1938,12 +1938,12 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-04-06'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-04-06'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-05-06', '2026-05-06', 'Concluído')
+    VALUES (v_ativo_id, '2026-05-06', '2026-05-06', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -1955,7 +1955,7 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-05-06'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-05-06'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
@@ -2058,7 +2058,7 @@ BEGIN
          WHERE id = v_ativo_id;
     END IF;
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-01-05', '2026-01-05', 'Concluído')
+    VALUES (v_ativo_id, '2026-01-05', '2026-01-05', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -2070,12 +2070,12 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-01-05'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-01-05'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-02-05', '2026-02-05', 'Concluído')
+    VALUES (v_ativo_id, '2026-02-05', '2026-02-05', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -2087,12 +2087,12 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-02-05'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-02-05'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-03-05', '2026-03-05', 'Concluído')
+    VALUES (v_ativo_id, '2026-03-05', '2026-03-05', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -2104,12 +2104,12 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-03-05'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-03-05'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-04-06', '2026-04-06', 'Concluído')
+    VALUES (v_ativo_id, '2026-04-06', '2026-04-06', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -2121,12 +2121,12 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-04-06'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-04-06'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-05-06', '2026-05-06', 'Concluído')
+    VALUES (v_ativo_id, '2026-05-06', '2026-05-06', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -2138,7 +2138,7 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-05-06'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-05-06'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
@@ -2241,7 +2241,7 @@ BEGIN
          WHERE id = v_ativo_id;
     END IF;
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-01-05', '2026-01-05', 'Concluído')
+    VALUES (v_ativo_id, '2026-01-05', '2026-01-05', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -2253,12 +2253,12 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-01-05'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-01-05'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-02-05', '2026-02-05', 'Concluído')
+    VALUES (v_ativo_id, '2026-02-05', '2026-02-05', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -2270,12 +2270,12 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-02-05'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-02-05'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-03-05', '2026-03-05', 'Concluído')
+    VALUES (v_ativo_id, '2026-03-05', '2026-03-05', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -2287,12 +2287,12 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-03-05'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-03-05'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-04-06', '2026-04-06', 'Concluído')
+    VALUES (v_ativo_id, '2026-04-06', '2026-04-06', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -2304,12 +2304,12 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-04-06'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-04-06'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-05-06', '2026-05-06', 'Concluído')
+    VALUES (v_ativo_id, '2026-05-06', '2026-05-06', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -2321,7 +2321,7 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-05-06'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-05-06'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
@@ -2424,7 +2424,7 @@ BEGIN
          WHERE id = v_ativo_id;
     END IF;
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-01-05', '2026-01-05', 'Concluído')
+    VALUES (v_ativo_id, '2026-01-05', '2026-01-05', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -2436,12 +2436,12 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-01-05'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-01-05'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-02-05', '2026-02-05', 'Concluído')
+    VALUES (v_ativo_id, '2026-02-05', '2026-02-05', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -2453,12 +2453,12 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-02-05'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-02-05'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-03-05', '2026-03-05', 'Concluído')
+    VALUES (v_ativo_id, '2026-03-05', '2026-03-05', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -2470,12 +2470,12 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-03-05'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-03-05'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-04-06', '2026-04-06', 'Concluído')
+    VALUES (v_ativo_id, '2026-04-06', '2026-04-06', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -2487,12 +2487,12 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-04-06'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-04-06'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-05-06', '2026-05-06', 'Concluído')
+    VALUES (v_ativo_id, '2026-05-06', '2026-05-06', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -2504,7 +2504,7 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-05-06'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-05-06'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
@@ -2607,7 +2607,7 @@ BEGIN
          WHERE id = v_ativo_id;
     END IF;
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-01-05', '2026-01-05', 'Concluído')
+    VALUES (v_ativo_id, '2026-01-05', '2026-01-05', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -2619,12 +2619,12 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-01-05'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-01-05'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-02-05', '2026-02-05', 'Concluído')
+    VALUES (v_ativo_id, '2026-02-05', '2026-02-05', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -2636,12 +2636,12 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-02-05'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-02-05'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-03-05', '2026-03-05', 'Concluído')
+    VALUES (v_ativo_id, '2026-03-05', '2026-03-05', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -2653,12 +2653,12 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-03-05'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-03-05'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-04-06', '2026-04-06', 'Concluído')
+    VALUES (v_ativo_id, '2026-04-06', '2026-04-06', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -2670,12 +2670,12 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-04-06'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-04-06'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-05-06', '2026-05-06', 'Concluído')
+    VALUES (v_ativo_id, '2026-05-06', '2026-05-06', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -2687,7 +2687,7 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-05-06'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-05-06'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
@@ -2790,7 +2790,7 @@ BEGIN
          WHERE id = v_ativo_id;
     END IF;
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-01-05', '2026-01-05', 'Concluído')
+    VALUES (v_ativo_id, '2026-01-05', '2026-01-05', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -2802,12 +2802,12 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-01-05'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-01-05'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-02-05', '2026-02-05', 'Concluído')
+    VALUES (v_ativo_id, '2026-02-05', '2026-02-05', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -2819,12 +2819,12 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-02-05'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-02-05'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-03-05', '2026-03-05', 'Concluído')
+    VALUES (v_ativo_id, '2026-03-05', '2026-03-05', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -2836,12 +2836,12 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-03-05'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-03-05'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-04-06', '2026-04-06', 'Concluído')
+    VALUES (v_ativo_id, '2026-04-06', '2026-04-06', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -2853,12 +2853,12 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-04-06'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-04-06'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-05-06', '2026-05-06', 'Concluído')
+    VALUES (v_ativo_id, '2026-05-06', '2026-05-06', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -2870,7 +2870,7 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-05-06'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-05-06'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
@@ -2973,7 +2973,7 @@ BEGIN
          WHERE id = v_ativo_id;
     END IF;
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-01-05', '2026-01-05', 'Concluído')
+    VALUES (v_ativo_id, '2026-01-05', '2026-01-05', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -2985,12 +2985,12 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-01-05'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-01-05'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-02-05', '2026-02-05', 'Concluído')
+    VALUES (v_ativo_id, '2026-02-05', '2026-02-05', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -3002,12 +3002,12 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-02-05'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-02-05'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-03-05', '2026-03-05', 'Concluído')
+    VALUES (v_ativo_id, '2026-03-05', '2026-03-05', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -3019,12 +3019,12 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-03-05'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-03-05'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-04-06', '2026-04-06', 'Concluído')
+    VALUES (v_ativo_id, '2026-04-06', '2026-04-06', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -3036,12 +3036,12 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-04-06'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-04-06'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-05-06', '2026-05-06', 'Concluído')
+    VALUES (v_ativo_id, '2026-05-06', '2026-05-06', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -3053,7 +3053,7 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-05-06'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-05-06'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
@@ -3156,7 +3156,7 @@ BEGIN
          WHERE id = v_ativo_id;
     END IF;
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-01-05', '2026-01-05', 'Concluído')
+    VALUES (v_ativo_id, '2026-01-05', '2026-01-05', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -3168,12 +3168,12 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-01-05'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-01-05'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-02-05', '2026-02-05', 'Concluído')
+    VALUES (v_ativo_id, '2026-02-05', '2026-02-05', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -3185,12 +3185,12 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-02-05'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-02-05'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-03-05', '2026-03-05', 'Concluído')
+    VALUES (v_ativo_id, '2026-03-05', '2026-03-05', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -3202,12 +3202,12 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-03-05'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-03-05'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-04-06', '2026-04-06', 'Concluído')
+    VALUES (v_ativo_id, '2026-04-06', '2026-04-06', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -3219,12 +3219,12 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-04-06'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-04-06'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-05-06', '2026-05-06', 'Concluído')
+    VALUES (v_ativo_id, '2026-05-06', '2026-05-06', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -3236,7 +3236,7 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-05-06'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-05-06'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
@@ -3325,43 +3325,43 @@ BEGIN
         );
     END LOOP;
 
-    -- ----- SAPATA-RFID (criticidade Média) -----
+    -- ----- SAPATA-RFID (criticidade MÃ©dia) -----
     SELECT id INTO v_ativo_id FROM ti.ativos WHERE lower(nome) = lower('SAPATA-RFID') LIMIT 1;
     IF v_ativo_id IS NULL THEN
         INSERT INTO ti.ativos (nome, tipo, localizacao, criticidade, status, ultima_manutencao, proxima_manutencao)
-        VALUES ('SAPATA-RFID', 'Equipamento', 'Nao informado', 'Média', 'Operacional', NULL, NULL)
+        VALUES ('SAPATA-RFID', 'Equipamento', 'Nao informado', 'MÃ©dia', 'Operacional', NULL, NULL)
         RETURNING id INTO v_ativo_id;
     ELSE
         UPDATE ti.ativos
-           SET criticidade = 'Média',
+           SET criticidade = 'MÃ©dia',
                ultima_manutencao = COALESCE(NULL, ultima_manutencao),
                proxima_manutencao = NULL
          WHERE id = v_ativo_id;
     END IF;
 
-    -- ----- EXPEDICAO (criticidade Média) -----
+    -- ----- EXPEDICAO (criticidade MÃ©dia) -----
     SELECT id INTO v_ativo_id FROM ti.ativos WHERE lower(nome) = lower('EXPEDICAO') LIMIT 1;
     IF v_ativo_id IS NULL THEN
         INSERT INTO ti.ativos (nome, tipo, localizacao, criticidade, status, ultima_manutencao, proxima_manutencao)
-        VALUES ('EXPEDICAO', 'Equipamento', 'Nao informado', 'Média', 'Operacional', NULL, NULL)
+        VALUES ('EXPEDICAO', 'Equipamento', 'Nao informado', 'MÃ©dia', 'Operacional', NULL, NULL)
         RETURNING id INTO v_ativo_id;
     ELSE
         UPDATE ti.ativos
-           SET criticidade = 'Média',
+           SET criticidade = 'MÃ©dia',
                ultima_manutencao = COALESCE(NULL, ultima_manutencao),
                proxima_manutencao = NULL
          WHERE id = v_ativo_id;
     END IF;
 
-    -- ----- ROGERIOTHINK (criticidade Média) -----
+    -- ----- ROGERIOTHINK (criticidade MÃ©dia) -----
     SELECT id INTO v_ativo_id FROM ti.ativos WHERE lower(nome) = lower('ROGERIOTHINK') LIMIT 1;
     IF v_ativo_id IS NULL THEN
         INSERT INTO ti.ativos (nome, tipo, localizacao, criticidade, status, ultima_manutencao, proxima_manutencao)
-        VALUES ('ROGERIOTHINK', 'Equipamento', 'Nao informado', 'Média', 'Operacional', '2026-04-10', '2026-02-10')
+        VALUES ('ROGERIOTHINK', 'Equipamento', 'Nao informado', 'MÃ©dia', 'Operacional', '2026-04-10', '2026-02-10')
         RETURNING id INTO v_ativo_id;
     ELSE
         UPDATE ti.ativos
-           SET criticidade = 'Média',
+           SET criticidade = 'MÃ©dia',
                ultima_manutencao = COALESCE('2026-04-10', ultima_manutencao),
                proxima_manutencao = '2026-02-10'
          WHERE id = v_ativo_id;
@@ -3379,7 +3379,7 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-04-10', '2026-04-10', 'Concluído')
+    VALUES (v_ativo_id, '2026-04-10', '2026-04-10', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -3391,7 +3391,7 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-04-10'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-04-10'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
@@ -3444,15 +3444,15 @@ BEGIN
         );
     END LOOP;
 
-    -- ----- LOGISTICA03 (criticidade Média) -----
+    -- ----- LOGISTICA03 (criticidade MÃ©dia) -----
     SELECT id INTO v_ativo_id FROM ti.ativos WHERE lower(nome) = lower('LOGISTICA03') LIMIT 1;
     IF v_ativo_id IS NULL THEN
         INSERT INTO ti.ativos (nome, tipo, localizacao, criticidade, status, ultima_manutencao, proxima_manutencao)
-        VALUES ('LOGISTICA03', 'Equipamento', 'Nao informado', 'Média', 'Operacional', '2026-04-10', '2026-02-10')
+        VALUES ('LOGISTICA03', 'Equipamento', 'Nao informado', 'MÃ©dia', 'Operacional', '2026-04-10', '2026-02-10')
         RETURNING id INTO v_ativo_id;
     ELSE
         UPDATE ti.ativos
-           SET criticidade = 'Média',
+           SET criticidade = 'MÃ©dia',
                ultima_manutencao = COALESCE('2026-04-10', ultima_manutencao),
                proxima_manutencao = '2026-02-10'
          WHERE id = v_ativo_id;
@@ -3470,7 +3470,7 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-04-10', '2026-04-10', 'Concluído')
+    VALUES (v_ativo_id, '2026-04-10', '2026-04-10', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -3482,7 +3482,7 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-04-10'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-04-10'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
@@ -3535,21 +3535,21 @@ BEGIN
         );
     END LOOP;
 
-    -- ----- RICARDOTHINK (criticidade Média) -----
+    -- ----- RICARDOTHINK (criticidade MÃ©dia) -----
     SELECT id INTO v_ativo_id FROM ti.ativos WHERE lower(nome) = lower('RICARDOTHINK') LIMIT 1;
     IF v_ativo_id IS NULL THEN
         INSERT INTO ti.ativos (nome, tipo, localizacao, criticidade, status, ultima_manutencao, proxima_manutencao)
-        VALUES ('RICARDOTHINK', 'Equipamento', 'Nao informado', 'Média', 'Operacional', '2026-04-20', '2026-06-19')
+        VALUES ('RICARDOTHINK', 'Equipamento', 'Nao informado', 'MÃ©dia', 'Operacional', '2026-04-20', '2026-06-19')
         RETURNING id INTO v_ativo_id;
     ELSE
         UPDATE ti.ativos
-           SET criticidade = 'Média',
+           SET criticidade = 'MÃ©dia',
                ultima_manutencao = COALESCE('2026-04-20', ultima_manutencao),
                proxima_manutencao = '2026-06-19'
          WHERE id = v_ativo_id;
     END IF;
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-02-20', '2026-02-20', 'Concluído')
+    VALUES (v_ativo_id, '2026-02-20', '2026-02-20', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -3561,12 +3561,12 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-02-20'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-02-20'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-04-20', '2026-04-20', 'Concluído')
+    VALUES (v_ativo_id, '2026-04-20', '2026-04-20', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -3578,7 +3578,7 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-04-20'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-04-20'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
@@ -3631,21 +3631,21 @@ BEGIN
         );
     END LOOP;
 
-    -- ----- LOGISTICA-RECEB (criticidade Média) -----
+    -- ----- LOGISTICA-RECEB (criticidade MÃ©dia) -----
     SELECT id INTO v_ativo_id FROM ti.ativos WHERE lower(nome) = lower('LOGISTICA-RECEB') LIMIT 1;
     IF v_ativo_id IS NULL THEN
         INSERT INTO ti.ativos (nome, tipo, localizacao, criticidade, status, ultima_manutencao, proxima_manutencao)
-        VALUES ('LOGISTICA-RECEB', 'Equipamento', 'Nao informado', 'Média', 'Operacional', '2026-04-20', '2026-06-19')
+        VALUES ('LOGISTICA-RECEB', 'Equipamento', 'Nao informado', 'MÃ©dia', 'Operacional', '2026-04-20', '2026-06-19')
         RETURNING id INTO v_ativo_id;
     ELSE
         UPDATE ti.ativos
-           SET criticidade = 'Média',
+           SET criticidade = 'MÃ©dia',
                ultima_manutencao = COALESCE('2026-04-20', ultima_manutencao),
                proxima_manutencao = '2026-06-19'
          WHERE id = v_ativo_id;
     END IF;
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-02-20', '2026-02-20', 'Concluído')
+    VALUES (v_ativo_id, '2026-02-20', '2026-02-20', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -3657,12 +3657,12 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-02-20'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-02-20'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-04-20', '2026-04-20', 'Concluído')
+    VALUES (v_ativo_id, '2026-04-20', '2026-04-20', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -3674,7 +3674,7 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-04-20'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-04-20'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
@@ -3727,21 +3727,21 @@ BEGIN
         );
     END LOOP;
 
-    -- ----- VALMIR (criticidade Média) -----
+    -- ----- VALMIR (criticidade MÃ©dia) -----
     SELECT id INTO v_ativo_id FROM ti.ativos WHERE lower(nome) = lower('VALMIR') LIMIT 1;
     IF v_ativo_id IS NULL THEN
         INSERT INTO ti.ativos (nome, tipo, localizacao, criticidade, status, ultima_manutencao, proxima_manutencao)
-        VALUES ('VALMIR', 'Equipamento', 'Nao informado', 'Média', 'Operacional', '2026-04-20', '2026-06-19')
+        VALUES ('VALMIR', 'Equipamento', 'Nao informado', 'MÃ©dia', 'Operacional', '2026-04-20', '2026-06-19')
         RETURNING id INTO v_ativo_id;
     ELSE
         UPDATE ti.ativos
-           SET criticidade = 'Média',
+           SET criticidade = 'MÃ©dia',
                ultima_manutencao = COALESCE('2026-04-20', ultima_manutencao),
                proxima_manutencao = '2026-06-19'
          WHERE id = v_ativo_id;
     END IF;
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-04-20', '2026-04-20', 'Concluído')
+    VALUES (v_ativo_id, '2026-04-20', '2026-04-20', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -3753,7 +3753,7 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-04-20'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-04-20'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
@@ -3806,21 +3806,21 @@ BEGIN
         );
     END LOOP;
 
-    -- ----- LEONARDOTHINK (criticidade Média) -----
+    -- ----- LEONARDOTHINK (criticidade MÃ©dia) -----
     SELECT id INTO v_ativo_id FROM ti.ativos WHERE lower(nome) = lower('LEONARDOTHINK') LIMIT 1;
     IF v_ativo_id IS NULL THEN
         INSERT INTO ti.ativos (nome, tipo, localizacao, criticidade, status, ultima_manutencao, proxima_manutencao)
-        VALUES ('LEONARDOTHINK', 'Equipamento', 'Nao informado', 'Média', 'Operacional', '2026-04-10', '2026-06-10')
+        VALUES ('LEONARDOTHINK', 'Equipamento', 'Nao informado', 'MÃ©dia', 'Operacional', '2026-04-10', '2026-06-10')
         RETURNING id INTO v_ativo_id;
     ELSE
         UPDATE ti.ativos
-           SET criticidade = 'Média',
+           SET criticidade = 'MÃ©dia',
                ultima_manutencao = COALESCE('2026-04-10', ultima_manutencao),
                proxima_manutencao = '2026-06-10'
          WHERE id = v_ativo_id;
     END IF;
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-02-10', '2026-02-10', 'Concluído')
+    VALUES (v_ativo_id, '2026-02-10', '2026-02-10', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -3832,12 +3832,12 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-02-10'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-02-10'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-04-10', '2026-04-10', 'Concluído')
+    VALUES (v_ativo_id, '2026-04-10', '2026-04-10', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -3849,7 +3849,7 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-04-10'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-04-10'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
@@ -3902,21 +3902,21 @@ BEGIN
         );
     END LOOP;
 
-    -- ----- ROCHATHINK (criticidade Média) -----
+    -- ----- ROCHATHINK (criticidade MÃ©dia) -----
     SELECT id INTO v_ativo_id FROM ti.ativos WHERE lower(nome) = lower('ROCHATHINK') LIMIT 1;
     IF v_ativo_id IS NULL THEN
         INSERT INTO ti.ativos (nome, tipo, localizacao, criticidade, status, ultima_manutencao, proxima_manutencao)
-        VALUES ('ROCHATHINK', 'Equipamento', 'Nao informado', 'Média', 'Operacional', '2026-04-20', '2026-06-19')
+        VALUES ('ROCHATHINK', 'Equipamento', 'Nao informado', 'MÃ©dia', 'Operacional', '2026-04-20', '2026-06-19')
         RETURNING id INTO v_ativo_id;
     ELSE
         UPDATE ti.ativos
-           SET criticidade = 'Média',
+           SET criticidade = 'MÃ©dia',
                ultima_manutencao = COALESCE('2026-04-20', ultima_manutencao),
                proxima_manutencao = '2026-06-19'
          WHERE id = v_ativo_id;
     END IF;
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-04-20', '2026-04-20', 'Concluído')
+    VALUES (v_ativo_id, '2026-04-20', '2026-04-20', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -3928,7 +3928,7 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-04-20'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-04-20'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
@@ -3981,21 +3981,21 @@ BEGIN
         );
     END LOOP;
 
-    -- ----- OTAVIOTHINK (criticidade Média) -----
+    -- ----- OTAVIOTHINK (criticidade MÃ©dia) -----
     SELECT id INTO v_ativo_id FROM ti.ativos WHERE lower(nome) = lower('OTAVIOTHINK') LIMIT 1;
     IF v_ativo_id IS NULL THEN
         INSERT INTO ti.ativos (nome, tipo, localizacao, criticidade, status, ultima_manutencao, proxima_manutencao)
-        VALUES ('OTAVIOTHINK', 'Equipamento', 'Nao informado', 'Média', 'Operacional', '2026-05-19', '2026-07-17')
+        VALUES ('OTAVIOTHINK', 'Equipamento', 'Nao informado', 'MÃ©dia', 'Operacional', '2026-05-19', '2026-07-17')
         RETURNING id INTO v_ativo_id;
     ELSE
         UPDATE ti.ativos
-           SET criticidade = 'Média',
+           SET criticidade = 'MÃ©dia',
                ultima_manutencao = COALESCE('2026-05-19', ultima_manutencao),
                proxima_manutencao = '2026-07-17'
          WHERE id = v_ativo_id;
     END IF;
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-01-19', '2026-01-19', 'Concluído')
+    VALUES (v_ativo_id, '2026-01-19', '2026-01-19', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -4007,12 +4007,12 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-01-19'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-01-19'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-03-19', '2026-03-19', 'Concluído')
+    VALUES (v_ativo_id, '2026-03-19', '2026-03-19', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -4024,12 +4024,12 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-03-19'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-03-19'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-05-19', '2026-05-19', 'Concluído')
+    VALUES (v_ativo_id, '2026-05-19', '2026-05-19', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -4041,7 +4041,7 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-05-19'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-05-19'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
@@ -4082,21 +4082,21 @@ BEGIN
         );
     END LOOP;
 
-    -- ----- JONASTHINK (criticidade Média) -----
+    -- ----- JONASTHINK (criticidade MÃ©dia) -----
     SELECT id INTO v_ativo_id FROM ti.ativos WHERE lower(nome) = lower('JONASTHINK') LIMIT 1;
     IF v_ativo_id IS NULL THEN
         INSERT INTO ti.ativos (nome, tipo, localizacao, criticidade, status, ultima_manutencao, proxima_manutencao)
-        VALUES ('JONASTHINK', 'Equipamento', 'Nao informado', 'Média', 'Operacional', '2026-05-19', '2026-07-17')
+        VALUES ('JONASTHINK', 'Equipamento', 'Nao informado', 'MÃ©dia', 'Operacional', '2026-05-19', '2026-07-17')
         RETURNING id INTO v_ativo_id;
     ELSE
         UPDATE ti.ativos
-           SET criticidade = 'Média',
+           SET criticidade = 'MÃ©dia',
                ultima_manutencao = COALESCE('2026-05-19', ultima_manutencao),
                proxima_manutencao = '2026-07-17'
          WHERE id = v_ativo_id;
     END IF;
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-01-19', '2026-01-19', 'Concluído')
+    VALUES (v_ativo_id, '2026-01-19', '2026-01-19', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -4108,12 +4108,12 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-01-19'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-01-19'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-03-19', '2026-03-19', 'Concluído')
+    VALUES (v_ativo_id, '2026-03-19', '2026-03-19', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -4125,12 +4125,12 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-03-19'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-03-19'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-05-19', '2026-05-19', 'Concluído')
+    VALUES (v_ativo_id, '2026-05-19', '2026-05-19', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -4142,7 +4142,7 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-05-19'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-05-19'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
@@ -4183,21 +4183,21 @@ BEGIN
         );
     END LOOP;
 
-    -- ----- AMABILYTHINK (criticidade Média) -----
+    -- ----- AMABILYTHINK (criticidade MÃ©dia) -----
     SELECT id INTO v_ativo_id FROM ti.ativos WHERE lower(nome) = lower('AMABILYTHINK') LIMIT 1;
     IF v_ativo_id IS NULL THEN
         INSERT INTO ti.ativos (nome, tipo, localizacao, criticidade, status, ultima_manutencao, proxima_manutencao)
-        VALUES ('AMABILYTHINK', 'Equipamento', 'Nao informado', 'Média', 'Operacional', '2026-05-22', '2026-07-20')
+        VALUES ('AMABILYTHINK', 'Equipamento', 'Nao informado', 'MÃ©dia', 'Operacional', '2026-05-22', '2026-07-20')
         RETURNING id INTO v_ativo_id;
     ELSE
         UPDATE ti.ativos
-           SET criticidade = 'Média',
+           SET criticidade = 'MÃ©dia',
                ultima_manutencao = COALESCE('2026-05-22', ultima_manutencao),
                proxima_manutencao = '2026-07-20'
          WHERE id = v_ativo_id;
     END IF;
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-01-23', '2026-01-23', 'Concluído')
+    VALUES (v_ativo_id, '2026-01-23', '2026-01-23', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -4209,12 +4209,12 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-01-23'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-01-23'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-04-23', '2026-04-23', 'Concluído')
+    VALUES (v_ativo_id, '2026-04-23', '2026-04-23', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -4226,12 +4226,12 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-04-23'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-04-23'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-05-22', '2026-05-22', 'Concluído')
+    VALUES (v_ativo_id, '2026-05-22', '2026-05-22', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -4243,7 +4243,7 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-05-22'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-05-22'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
@@ -4284,21 +4284,21 @@ BEGIN
         );
     END LOOP;
 
-    -- ----- ENCARREGADOSTHINK (criticidade Média) -----
+    -- ----- ENCARREGADOSTHINK (criticidade MÃ©dia) -----
     SELECT id INTO v_ativo_id FROM ti.ativos WHERE lower(nome) = lower('ENCARREGADOSTHINK') LIMIT 1;
     IF v_ativo_id IS NULL THEN
         INSERT INTO ti.ativos (nome, tipo, localizacao, criticidade, status, ultima_manutencao, proxima_manutencao)
-        VALUES ('ENCARREGADOSTHINK', 'Equipamento', 'Nao informado', 'Média', 'Operacional', '2026-04-10', '2026-06-10')
+        VALUES ('ENCARREGADOSTHINK', 'Equipamento', 'Nao informado', 'MÃ©dia', 'Operacional', '2026-04-10', '2026-06-10')
         RETURNING id INTO v_ativo_id;
     ELSE
         UPDATE ti.ativos
-           SET criticidade = 'Média',
+           SET criticidade = 'MÃ©dia',
                ultima_manutencao = COALESCE('2026-04-10', ultima_manutencao),
                proxima_manutencao = '2026-06-10'
          WHERE id = v_ativo_id;
     END IF;
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-02-10', '2026-02-10', 'Concluído')
+    VALUES (v_ativo_id, '2026-02-10', '2026-02-10', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -4310,12 +4310,12 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-02-10'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-02-10'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-04-10', '2026-04-10', 'Concluído')
+    VALUES (v_ativo_id, '2026-04-10', '2026-04-10', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -4327,7 +4327,7 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-04-10'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-04-10'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
@@ -4380,21 +4380,21 @@ BEGIN
         );
     END LOOP;
 
-    -- ----- DRAUSIOTHINK (criticidade Média) -----
+    -- ----- DRAUSIOTHINK (criticidade MÃ©dia) -----
     SELECT id INTO v_ativo_id FROM ti.ativos WHERE lower(nome) = lower('DRAUSIOTHINK') LIMIT 1;
     IF v_ativo_id IS NULL THEN
         INSERT INTO ti.ativos (nome, tipo, localizacao, criticidade, status, ultima_manutencao, proxima_manutencao)
-        VALUES ('DRAUSIOTHINK', 'Equipamento', 'Nao informado', 'Média', 'Operacional', '2026-04-10', '2026-06-10')
+        VALUES ('DRAUSIOTHINK', 'Equipamento', 'Nao informado', 'MÃ©dia', 'Operacional', '2026-04-10', '2026-06-10')
         RETURNING id INTO v_ativo_id;
     ELSE
         UPDATE ti.ativos
-           SET criticidade = 'Média',
+           SET criticidade = 'MÃ©dia',
                ultima_manutencao = COALESCE('2026-04-10', ultima_manutencao),
                proxima_manutencao = '2026-06-10'
          WHERE id = v_ativo_id;
     END IF;
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-02-10', '2026-02-10', 'Concluído')
+    VALUES (v_ativo_id, '2026-02-10', '2026-02-10', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -4406,12 +4406,12 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-02-10'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-02-10'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-04-10', '2026-04-10', 'Concluído')
+    VALUES (v_ativo_id, '2026-04-10', '2026-04-10', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -4423,7 +4423,7 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-04-10'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-04-10'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
@@ -4476,21 +4476,21 @@ BEGIN
         );
     END LOOP;
 
-    -- ----- CLAUDINEITHINK (criticidade Média) -----
+    -- ----- CLAUDINEITHINK (criticidade MÃ©dia) -----
     SELECT id INTO v_ativo_id FROM ti.ativos WHERE lower(nome) = lower('CLAUDINEITHINK') LIMIT 1;
     IF v_ativo_id IS NULL THEN
         INSERT INTO ti.ativos (nome, tipo, localizacao, criticidade, status, ultima_manutencao, proxima_manutencao)
-        VALUES ('CLAUDINEITHINK', 'Equipamento', 'Nao informado', 'Média', 'Operacional', '2026-04-20', '2026-06-19')
+        VALUES ('CLAUDINEITHINK', 'Equipamento', 'Nao informado', 'MÃ©dia', 'Operacional', '2026-04-20', '2026-06-19')
         RETURNING id INTO v_ativo_id;
     ELSE
         UPDATE ti.ativos
-           SET criticidade = 'Média',
+           SET criticidade = 'MÃ©dia',
                ultima_manutencao = COALESCE('2026-04-20', ultima_manutencao),
                proxima_manutencao = '2026-06-19'
          WHERE id = v_ativo_id;
     END IF;
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-02-19', '2026-02-19', 'Concluído')
+    VALUES (v_ativo_id, '2026-02-19', '2026-02-19', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -4502,12 +4502,12 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-02-19'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-02-19'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-04-20', '2026-04-20', 'Concluído')
+    VALUES (v_ativo_id, '2026-04-20', '2026-04-20', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -4519,7 +4519,7 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-04-20'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-04-20'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
@@ -4572,21 +4572,21 @@ BEGIN
         );
     END LOOP;
 
-    -- ----- SILVIATHINK (criticidade Média) -----
+    -- ----- SILVIATHINK (criticidade MÃ©dia) -----
     SELECT id INTO v_ativo_id FROM ti.ativos WHERE lower(nome) = lower('SILVIATHINK') LIMIT 1;
     IF v_ativo_id IS NULL THEN
         INSERT INTO ti.ativos (nome, tipo, localizacao, criticidade, status, ultima_manutencao, proxima_manutencao)
-        VALUES ('SILVIATHINK', 'Equipamento', 'Nao informado', 'Média', 'Operacional', '2026-04-10', '2026-06-10')
+        VALUES ('SILVIATHINK', 'Equipamento', 'Nao informado', 'MÃ©dia', 'Operacional', '2026-04-10', '2026-06-10')
         RETURNING id INTO v_ativo_id;
     ELSE
         UPDATE ti.ativos
-           SET criticidade = 'Média',
+           SET criticidade = 'MÃ©dia',
                ultima_manutencao = COALESCE('2026-04-10', ultima_manutencao),
                proxima_manutencao = '2026-06-10'
          WHERE id = v_ativo_id;
     END IF;
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-02-10', '2026-02-10', 'Concluído')
+    VALUES (v_ativo_id, '2026-02-10', '2026-02-10', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -4598,12 +4598,12 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-02-10'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-02-10'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-04-10', '2026-04-10', 'Concluído')
+    VALUES (v_ativo_id, '2026-04-10', '2026-04-10', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -4615,7 +4615,7 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-04-10'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-04-10'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
@@ -4668,21 +4668,21 @@ BEGIN
         );
     END LOOP;
 
-    -- ----- LUIZ-PROCESSOS (criticidade Média) -----
+    -- ----- LUIZ-PROCESSOS (criticidade MÃ©dia) -----
     SELECT id INTO v_ativo_id FROM ti.ativos WHERE lower(nome) = lower('LUIZ-PROCESSOS') LIMIT 1;
     IF v_ativo_id IS NULL THEN
         INSERT INTO ti.ativos (nome, tipo, localizacao, criticidade, status, ultima_manutencao, proxima_manutencao)
-        VALUES ('LUIZ-PROCESSOS', 'Equipamento', 'Nao informado', 'Média', 'Operacional', '2026-05-05', '2026-03-05')
+        VALUES ('LUIZ-PROCESSOS', 'Equipamento', 'Nao informado', 'MÃ©dia', 'Operacional', '2026-05-05', '2026-03-05')
         RETURNING id INTO v_ativo_id;
     ELSE
         UPDATE ti.ativos
-           SET criticidade = 'Média',
+           SET criticidade = 'MÃ©dia',
                ultima_manutencao = COALESCE('2026-05-05', ultima_manutencao),
                proxima_manutencao = '2026-03-05'
          WHERE id = v_ativo_id;
     END IF;
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-01-05', '2026-01-05', 'Concluído')
+    VALUES (v_ativo_id, '2026-01-05', '2026-01-05', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -4694,7 +4694,7 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-01-05'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-01-05'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
@@ -4711,7 +4711,7 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-05-05', '2026-05-05', 'Concluído')
+    VALUES (v_ativo_id, '2026-05-05', '2026-05-05', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -4723,7 +4723,7 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-05-05'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-05-05'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
@@ -4812,21 +4812,21 @@ BEGIN
         );
     END LOOP;
 
-    -- ----- DOUGLASTHINK (criticidade Média) -----
+    -- ----- DOUGLASTHINK (criticidade MÃ©dia) -----
     SELECT id INTO v_ativo_id FROM ti.ativos WHERE lower(nome) = lower('DOUGLASTHINK') LIMIT 1;
     IF v_ativo_id IS NULL THEN
         INSERT INTO ti.ativos (nome, tipo, localizacao, criticidade, status, ultima_manutencao, proxima_manutencao)
-        VALUES ('DOUGLASTHINK', 'Equipamento', 'Nao informado', 'Média', 'Operacional', '2026-04-10', '2026-06-10')
+        VALUES ('DOUGLASTHINK', 'Equipamento', 'Nao informado', 'MÃ©dia', 'Operacional', '2026-04-10', '2026-06-10')
         RETURNING id INTO v_ativo_id;
     ELSE
         UPDATE ti.ativos
-           SET criticidade = 'Média',
+           SET criticidade = 'MÃ©dia',
                ultima_manutencao = COALESCE('2026-04-10', ultima_manutencao),
                proxima_manutencao = '2026-06-10'
          WHERE id = v_ativo_id;
     END IF;
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-02-19', '2026-02-19', 'Concluído')
+    VALUES (v_ativo_id, '2026-02-19', '2026-02-19', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -4838,12 +4838,12 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-02-19'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-02-19'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-04-10', '2026-04-10', 'Concluído')
+    VALUES (v_ativo_id, '2026-04-10', '2026-04-10', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -4855,7 +4855,7 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-04-10'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-04-10'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
@@ -4896,15 +4896,15 @@ BEGIN
         );
     END LOOP;
 
-    -- ----- NICOLEDELL3050 (criticidade Média) -----
+    -- ----- NICOLEDELL3050 (criticidade MÃ©dia) -----
     SELECT id INTO v_ativo_id FROM ti.ativos WHERE lower(nome) = lower('NICOLEDELL3050') LIMIT 1;
     IF v_ativo_id IS NULL THEN
         INSERT INTO ti.ativos (nome, tipo, localizacao, criticidade, status, ultima_manutencao, proxima_manutencao)
-        VALUES ('NICOLEDELL3050', 'Equipamento', 'Nao informado', 'Média', 'Operacional', '2026-05-22', '2026-01-21')
+        VALUES ('NICOLEDELL3050', 'Equipamento', 'Nao informado', 'MÃ©dia', 'Operacional', '2026-05-22', '2026-01-21')
         RETURNING id INTO v_ativo_id;
     ELSE
         UPDATE ti.ativos
-           SET criticidade = 'Média',
+           SET criticidade = 'MÃ©dia',
                ultima_manutencao = COALESCE('2026-05-22', ultima_manutencao),
                proxima_manutencao = '2026-01-21'
          WHERE id = v_ativo_id;
@@ -4934,7 +4934,7 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.ciclos_manutencao (ativo_id, data_proxima_manutencao, data_fim, status)
-    VALUES (v_ativo_id, '2026-05-22', '2026-05-22', 'Concluído')
+    VALUES (v_ativo_id, '2026-05-22', '2026-05-22', 'ConcluÃ­do')
     ON CONFLICT (ativo_id, data_proxima_manutencao) DO UPDATE
         SET status = EXCLUDED.status, data_fim = EXCLUDED.data_fim
     RETURNING id INTO v_ciclo_id;
@@ -4946,7 +4946,7 @@ BEGIN
         );
     END LOOP;
     INSERT INTO ti.registros_manutencao (ativo_id, ciclo_id, tecnico, data_execucao, status)
-    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-05-22'::timestamptz, 'Concluída'
+    SELECT v_ativo_id, v_ciclo_id, 'Importado da planilha', '2026-05-22'::timestamptz, 'ConcluÃ­da'
     WHERE NOT EXISTS (
         SELECT 1 FROM ti.registros_manutencao WHERE ciclo_id = v_ciclo_id
     );
@@ -5253,11 +5253,11 @@ BEGIN
         );
     END LOOP;
 
-    -- ----- FLAVIATHIMK (criticidade Baixa) -----
-    SELECT id INTO v_ativo_id FROM ti.ativos WHERE lower(nome) = lower('FLAVIATHIMK') LIMIT 1;
+    -- ----- FLAVIATHINK (criticidade Baixa) -----
+    SELECT id INTO v_ativo_id FROM ti.ativos WHERE lower(nome) = lower('FLAVIATHINK') LIMIT 1;
     IF v_ativo_id IS NULL THEN
         INSERT INTO ti.ativos (nome, tipo, localizacao, criticidade, status, ultima_manutencao, proxima_manutencao)
-        VALUES ('FLAVIATHIMK', 'Equipamento', 'Nao informado', 'Baixa', 'Operacional', NULL, '2026-06-26')
+        VALUES ('FLAVIATHINK', 'Equipamento', 'Nao informado', 'Baixa', 'Operacional', NULL, '2026-06-26')
         RETURNING id INTO v_ativo_id;
     ELSE
         UPDATE ti.ativos

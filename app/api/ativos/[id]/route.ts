@@ -175,6 +175,17 @@ export async function PUT(
     if (data.localizacao !== undefined) updateData.localizacao = data.localizacao
     if (data.criticidade !== undefined) updateData.criticidade = data.criticidade
     if (data.status !== undefined) updateData.status = data.status
+    if (data.categoria_id !== undefined) updateData.categoria_id = data.categoria_id || null
+    if (data.patrimonio !== undefined) updateData.patrimonio = data.patrimonio || null
+    if (data.numero_serie !== undefined) updateData.numero_serie = data.numero_serie || null
+    if (data.fabricante !== undefined) updateData.fabricante = data.fabricante || null
+    if (data.modelo !== undefined) updateData.modelo = data.modelo || null
+    if (data.data_aquisicao !== undefined) updateData.data_aquisicao = data.data_aquisicao || null
+    if (data.valor_aquisicao !== undefined) updateData.valor_aquisicao = data.valor_aquisicao || null
+    if (data.garantia_ate !== undefined) updateData.garantia_ate = data.garantia_ate || null
+    if (data.responsavel !== undefined) updateData.responsavel = data.responsavel || null
+    if (data.setor !== undefined) updateData.setor = data.setor || null
+    if (data.observacoes !== undefined) updateData.observacoes = data.observacoes || null
     if (data.ultima_manutencao !== undefined) updateData.ultima_manutencao = data.ultima_manutencao
     if (data.proxima_manutencao !== undefined) updateData.proxima_manutencao = data.proxima_manutencao
 

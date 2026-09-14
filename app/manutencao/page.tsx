@@ -255,7 +255,7 @@ export default function ManutencaoPage() {
       return dateA - dateB
     })
 
-  const reportMonthOptions = monthlyMetrics.slice(0, 12)
+  const reportMonthOptions = monthlyMetrics.slice(0, 24)
 
   useEffect(() => {
     if (reportMonthOptions.length > 0 && selectedReportMonths.length === 0) {
